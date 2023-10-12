@@ -4,13 +4,12 @@
 
 For my project this term, I would like to design and program a 2D platformer game.
 The goal of the game would be similar to Mario, which is to make your character reach
-the end of a level without getting hit by enemies and losing all lives. 
+the end of a level without getting hit by enemies.
 The basic features of the game will include:
 
 - Left, right, and jumping movement
-- Side-scrolling with character movement
-- Platforms and gaps to maneuver through
-- ***ENEMIES*** who may move or attack
+- Platforms to maneuver through
+- ***ENEMIES*** who may move
 - Unique **POWER-UPS** to pick up and use
 - Saving and loading of game data
 
@@ -26,5 +25,4 @@ like any potential player to have an enjoyable time playing the game I made.
 - As a player, I want to be able to pick up power-ups and add them to my inventory.
 - As a player, I want to be able to see the list of power-ups I currently possess.
 - As a player, I want to be able to use my power-ups.
-- As a player, I want to be able to move my character lef, right, and jump.
-- As a player, I want to be able to see how long it took me to complete a level.
+- As a player, I want to be able to move my character left, right, and jump.
