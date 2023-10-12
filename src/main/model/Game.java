@@ -54,6 +54,18 @@ public class Game {
 
     }
 
+    // EFFECTS: returns true if a Position is at the edge of the game (but not bottom)
+    public boolean atBoundary(Position p) {
+        return p.getPositionX() <= 0 || p.getPositionY() <= 0
+                || p.getPositionX() >= maxX;
+    }
+
+    // EFFECTS: returns true if a Position is at the bottom edge of the game,
+
+    public boolean atBottomBoundary(Position p) {
+        return p.getPositionY() >= maxY;
+    }
+
     // MODIFIES: this, pu
     // EFFECTS: adds power-up to the inventory and assigns a key for its use
     public void collectItem(PowerUp pu) {

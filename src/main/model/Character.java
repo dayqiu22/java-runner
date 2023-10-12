@@ -23,6 +23,7 @@ public class Character {
         return false;
     }
 
+
     public Position getPosition() {
         return position;
     }

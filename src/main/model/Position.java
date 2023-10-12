@@ -5,6 +5,7 @@ public class Position {
     private int positionX;
     private int positionY;
 
+    // REQUIRES: x and y both >= 0
     // EFFECTS: constructs a Position representing coordinate (x, y)
     public Position(int x, int y) {
         this.positionX = x;
