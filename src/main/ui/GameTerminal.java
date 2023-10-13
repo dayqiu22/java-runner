@@ -61,6 +61,7 @@ public class GameTerminal {
         testgame.addBlock(new PowerUp(new Position(33, 16), Game.SPEED));
     }
 
+    // based on startGame() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // REQUIRES: a terminal does not already exist
     // MODIFIES: this
     // EFFECTS: initializes the terminal screen, the game and game map,
@@ -78,6 +79,7 @@ public class GameTerminal {
         cycleTicks();
     }
 
+    // based on beginTicks() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // EFFECTS: ticks to progress the game state every 1/10th of a second
     // as long as the game has not ended or there is an end screen present;
     // if the game has ended and there is no end screen then exit the program
@@ -90,13 +92,13 @@ public class GameTerminal {
         System.exit(0);
     }
 
+    // based on tick() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // MODIFIES: this
     // EFFECTS: reads user inputs and updates game variables as needed before
     // ticking the game state; the screen is cleared and the new game state
     // is rendered on the terminal at the end of the tick
     private void uiTick() throws IOException {
         handleUserInputs();
-
         this.game.tick();
 
         this.screen.setCursorPosition(new TerminalPosition(0, 0));
@@ -105,6 +107,7 @@ public class GameTerminal {
         this.screen.refresh();
     }
 
+    // modelled after handleUserInputs() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // MODIFIES: this
     // EFFECTS: handles different user inputs including keys for using power-ups,
     // jumping, and moving left or right
@@ -184,6 +187,7 @@ public class GameTerminal {
         this.game.getCharacter().setVelocityX(1);
     }
 
+    // based on render() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // MODIFIES: this
     // EFFECTS: renders the end screen if the game is over;
     // otherwise display the seconds since game start, all the blocks
@@ -202,6 +206,7 @@ public class GameTerminal {
         drawInventory();
     }
 
+    // based on drawEndScreen() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // MODIFIES: this
     // EFFECTS: draws an end screen showing the time for game completion in seconds,
     // also shows a close button that can be trigger by clicking enter to exit the program
@@ -218,6 +223,7 @@ public class GameTerminal {
         dialog.showDialog(this.endGui);
     }
 
+    // based on drawScore() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // MODIFIES: this
     // EFFECTS: displays the time since game start in seconds
     private void drawTime() {
@@ -288,6 +294,7 @@ public class GameTerminal {
         }
     }
 
+    // based on drawPosition() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // MODIFIES: this
     // EFFECTS: displays c with a custom color at the specified p in the terminal
     private void drawPosition(Position p, TextColor color, char c) {

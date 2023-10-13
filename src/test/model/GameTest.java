@@ -1,3 +1,5 @@
+package model;
+
 import model.*;
 import model.Character;
 import org.junit.jupiter.api.BeforeEach;

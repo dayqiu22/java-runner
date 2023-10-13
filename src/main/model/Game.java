@@ -61,7 +61,7 @@ public class Game {
             int currentMultiplier = this.character.getVelocityXMultiplier();
             if (currentMultiplier > 0) {
                 this.character.setVelocityXMultiplier(1);
-            } else if (currentMultiplier < 0) {
+            } else {
                 this.character.setVelocityXMultiplier(-1);
             }
         }
@@ -79,11 +79,10 @@ public class Game {
         return 0;
     }
 
-    /**
-     * Since the terminal uses a grid system rather than
-     * pixels; we will move the character 1 unit at a time
-     * to avoid skipping over blocks and not detecting collision.
-     */
+    // Since the terminal uses a grid system rather than
+    // pixels; we will move the character 1 unit at a time
+    // to avoid skipping over blocks and not detecting collision.
+
     // REQUIRES: list of blocks in the game to not be empty
     // MODIFIES: this
     // EFFECTS: moves character vertically and checks all blocks for collisions,
@@ -237,10 +236,10 @@ public class Game {
         pu.setKeyAssignment(null);
         if (pu.getName().equals(INVULNERABLE)) {
             this.invulnerabilityEnd = this.time + POWER_UP_TIME;
-        } else if (pu.getName().equals(SPEED)) {
+        } else {
             this.speedEnd = this.time + POWER_UP_TIME;
             int currentMultiplier = this.character.getVelocityXMultiplier();
-            if (currentMultiplier < 2 && currentMultiplier > -2) {
+            if (currentMultiplier == 1 || currentMultiplier == -1) {
                 this.character.setVelocityXMultiplier(currentMultiplier * 2);
             }
         }

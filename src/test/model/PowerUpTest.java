@@ -1,3 +1,5 @@
+package model;
+
 import model.Position;
 import model.PowerUp;
 import org.junit.jupiter.api.BeforeEach;

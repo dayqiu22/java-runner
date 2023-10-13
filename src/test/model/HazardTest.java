@@ -1,3 +1,5 @@
+package model;
+
 import model.Hazard;
 import model.Position;
 import org.junit.jupiter.api.BeforeEach;
