@@ -93,6 +93,7 @@ public class Game {
         moveResolveCollisionsX();
     }
 
+    // algorithm from Resolving Platform Collisions tutorial by Long Nguyen on YouTube
     // REQUIRES: list of blocks in the game to not be empty
     // MODIFIES: this
     // EFFECTS: moves character vertically then checks all blocks for collisions,
@@ -126,6 +127,7 @@ public class Game {
         }
     }
 
+    // algorithm from Resolving Platform Collisions tutorial by Long Nguyen on YouTube
     // REQUIRES: list of blocks in the game to not be empty
     // MODIFIES: this
     // EFFECTS: moves character horizontally then checks all blocks for collisions,
@@ -166,6 +168,7 @@ public class Game {
         return (p.getPositionX() == blockX && p.getPositionY() == blockY);
     }
 
+    // algorithm from Resolving Platform Collisions tutorial by Long Nguyen on YouTube
     // REQUIRES: list of blocks in the game to not be empty
     // EFFECTS: returns a list of blocks in collision with p
     public List<Block> checkCollisionList(Position p) {
