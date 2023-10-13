@@ -3,12 +3,12 @@ package model;
 // Class representing a hazard block in the game, which can move left or right
 // within a certain range from its starting position
 public class Hazard extends Block {
-    private static final int RANGE = 4;
+    private static final int RANGE = 3;
     private final Position startingPosition;
     private final int leftBoundX;
     private final int rightBoundX;
     private final int velocity;
-    private final int direction;
+    private int direction;
 
     // EFFECTS: constructs a Hazard at given position;
     // records the starting position, initializes its movement boundary,
@@ -26,17 +26,18 @@ public class Hazard extends Block {
     // MODIFIES: this
     // EFFECTS: moves the hazard block in its direction at velocity, change direction if at left/right bound
     public void move() {
-
+        int currentX = this.position.getPositionX();
+        if (currentX >= rightBoundX || currentX <= leftBoundX) {
+            changeDir();
+        }
+        int newX = currentX + (velocity * direction);
+        this.position.setPositionX(newX);
     }
 
     // MODIFIES: this
     // EFFECTS: changes the direction of movement
     public void changeDir() {
-
-    }
-
-    public String getName() {
-        return name;
+        this.direction = this.direction * -1;
     }
 
     public int getDirection() {

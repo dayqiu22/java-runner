@@ -5,7 +5,7 @@ package model;
 public class PowerUp extends Block {
     private String keyAssignment;
 
-    // REQUIRES: name is "speedup" or "invulnerable"
+    // REQUIRES: name is "speedup" or "invulnerability"
     // EFFECTS: constructs a PowerUp at given position;
     // does not initialize key assignment
     public PowerUp(Position position, String name) {
@@ -19,10 +19,6 @@ public class PowerUp extends Block {
 
     public void setKeyAssignment(String keyAssignment) {
         this.keyAssignment = keyAssignment;
-    }
-
-    public String getName() {
-        return name;
     }
 }
 

@@ -18,12 +18,6 @@ public class Character {
         this.velocityY = STARTING_VELOCITY;
     }
 
-    // EFFECTS: returns true if character collided with any blocks
-    public boolean isCollided(Block block) {
-        return false;
-    }
-
-
     public Position getPosition() {
         return position;
     }

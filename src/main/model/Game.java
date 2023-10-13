@@ -6,9 +6,13 @@ import java.util.List;
 // Class representing the game as a whole, handles movement,
 // handles power-up inventory (max 3 power-ups) and usage
 public class Game {
-    public static final int TICKS_PER_SECOND = 10;
-    public static final int TENTH_PER_TICK = 1;
-    public static final int POWER_UP_TIME = 30;
+    private static final int TICKS_PER_SECOND = 10;
+    private static final int TENTH_PER_TICK = 1;
+    private static final int POWER_UP_TIME = 30;
+    private static final String BLOCK = "block";
+    private static final String SPEED = "speedup";
+    private static final String INVULNERABLE = "invulnerability";
+    private static final String HAZARD = "hazard";
     private static final int GRAVITY = 1;
     private final int maxX;
     private final int maxY;
@@ -44,7 +48,7 @@ public class Game {
     // MODIFIES: this
     // EFFECTS: adds a block to list of blocks in the game
     public void addBlock(Block block) {
-
+        this.blocks.add(block);
     }
 
     // MODIFIES: this
@@ -56,29 +60,108 @@ public class Game {
     }
 
     /**
-     * We will assume the max velocity is 2 or -2 for this phase
-     * since the terminal uses a grid system rather than
+     * Since the terminal uses a grid system rather than
      * pixels; we will move the character 1 unit at a time
      * to avoid skipping over blocks and not detecting collision.
      */
+    // MODIFIES: this
+    // EFFECTS: moves character vertically and checks all blocks for collisions,
+    // behaviour depends on block in collision with; then moves character
+    // horizontally and repeat the same procedure
+    public void moveResolveCollisions() {
+        moveResolveCollisionsY();
+        moveResolveCollisionsX();
+    }
+
+
     // MODIFIES: this
     // EFFECTS: moves character vertically then checks all blocks for collisions,
     // stop movement of character 1 position back if collided with a normal block,
     // set game to ended if collision occurs with a hazard while not invulnerable;
     // also handles collecting power-ups using a helper method
-    public void moveResolveCollisions() {
+    public void moveResolveCollisionsY() {
+        Position charaPosition = this.character.getPosition();
+        int vy = this.character.getVelocityY();
+        int unitVelocity = 1;
+        if (vy < 0) {
+            unitVelocity = -1;
+            vy = vy * -1;
+        }
 
+        for (int i = 0; i < vy; i++) {
+            int originalY = charaPosition.getPositionY();
+            charaPosition.setPositionY(originalY + unitVelocity);
+            List<Block> collided = checkCollisionList(charaPosition);
+            if (collided.size() != 0) {
+                Block firstCollision = collided.get(0);
+                if (firstCollision.getName() == BLOCK) {
+                    charaPosition.setPositionY(originalY);
+                } else if (firstCollision.getName() == SPEED || firstCollision.getName() == INVULNERABLE) {
+                    collectPowerUp((PowerUp) firstCollision);
+                } else if (firstCollision.getName() == HAZARD) {
+                    this.ended = true;
+                }
+            }
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: moves character horizontally then checks all blocks for collisions,
+    // stop movement of character 1 position back if collided with a normal block,
+    // set game to ended if collision occurs with a hazard while not invulnerable;
+    // also handles collecting power-ups using a helper method
+    public void moveResolveCollisionsX() {
+        Position charaPosition = this.character.getPosition();
+        int vx = this.character.getVelocityX() * this.character.getVelocityXMultiplier();
+        int unitVelocity = 1;
+        if (vx < 0) {
+            unitVelocity = -1;
+            vx = vx * -1;
+        }
+
+        for (int i = 0; i < vx; i++) {
+            int originalX = charaPosition.getPositionX();
+            charaPosition.setPositionX(originalX + unitVelocity);
+            List<Block> collided = checkCollisionList(charaPosition);
+            if (collided.size() != 0) {
+                Block firstCollision = collided.get(0);
+                if (firstCollision.getName() == BLOCK) {
+                    charaPosition.setPositionX(originalX);
+                } else if (firstCollision.getName() == SPEED || firstCollision.getName() == INVULNERABLE) {
+                    collectPowerUp((PowerUp) firstCollision);
+                } else if (firstCollision.getName() == HAZARD) {
+                    this.ended = true;
+                }
+            }
+        }
+    }
+
+    // EFFECTS: returns true if p collided with the given block
+    public boolean isCollided(Position p, Block block) {
+        int blockX = block.getPosition().getPositionX();
+        int blockY = block.getPosition().getPositionY();
+        return (p.getPositionX() == blockX && p.getPositionY() == blockY);
     }
 
     // REQUIRES: list of blocks in the game to not be empty
     // EFFECTS: returns a list of blocks in collision with p
     public List<Block> checkCollisionList(Position p) {
-        return null;
+        List<Block> collided = new ArrayList<>();
+        for (Block block : blocks) {
+            if (isCollided(p, block)) {
+                collided.add(block);
+            }
+        }
+        return collided;
     }
 
     // EFFECTS: returns true if p is currently on a platform
     public boolean onPlatform(Position p) {
-        return true;
+        int currentY = p.getPositionY();
+        p.setPositionY(currentY + 1);
+        List<Block> collided = checkCollisionList(p);
+        p.setPositionY(currentY);
+        return (collided.size() != 0);
     }
 
     // EFFECTS: returns true if p is at the edge of the game (but not bottom)
@@ -97,17 +180,34 @@ public class Game {
     // its use if available; returns true if collected and removes
     // pu from the list of game blocks
     public boolean collectPowerUp(PowerUp pu) {
-        return true;
+        this.availableKeys.sort(null);
+        if (this.availableKeys.size() != 0) {
+            pu.setKeyAssignment(this.availableKeys.get(0));
+            this.availableKeys.remove(0);
+            this.inventory.add(pu);
+            this.blocks.remove(pu);
+            return true;
+        }
+        return false;
     }
 
     // REQUIRES: pu in inventory of power-ups
     // MODIFIES: this, pu
     // EFFECTS: applies power-up effects to the character/game and keeps
     // track of when effects expire; unbinds key to power-up and removes
-    // the used power-up from the inventory; only extends
+    // the used power-up from the inventory; only refreshes
     // duration if an identical power-up is already in use
     public void usePowerUp(PowerUp pu) {
-
+        this.inventory.remove(pu);
+        this.availableKeys.add(pu.getKeyAssignment());
+        pu.setKeyAssignment(null);
+        if (pu.getName() == INVULNERABLE) {
+            this.invulnerabilityEnd = this.time + POWER_UP_TIME;
+        } else if (pu.getName() == SPEED) {
+            this.speedEnd = this.time + POWER_UP_TIME;
+            int currentMultiplier = this.character.getVelocityXMultiplier();
+            this.character.setVelocityXMultiplier(currentMultiplier * 2);
+        }
     }
 
 

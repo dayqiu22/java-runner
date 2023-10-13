@@ -1,5 +1,3 @@
-package modeltests;
-
 import model.*;
 import model.Character;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,25 +31,5 @@ class CharacterTest {
         assertEquals(0, testCharacter.getVelocityX());
         assertEquals(1, testCharacter.getVelocityXMultiplier());
         assertEquals(0, testCharacter.getVelocityY());
-    }
-
-    @Test
-    void testIsCollidedSetX() {
-        testCharacter.setPosition(new Position(11, 10));
-        assertTrue(testCharacter.isCollided(testBlock1));
-        assertFalse(testCharacter.isCollided(testHazard));
-        assertFalse(testCharacter.isCollided(testPowerUp1));
-        assertFalse(testCharacter.isCollided(testBlock2));
-        assertFalse(testCharacter.isCollided(testBlock3));
-    }
-
-    @Test
-    void testIsCollidedSetY() {
-        testCharacter.setPosition(new Position(10, 8));
-        assertTrue(testCharacter.isCollided(testPowerUp2));
-        assertFalse(testCharacter.isCollided(testBlock1));
-        assertFalse(testCharacter.isCollided(testBlock3));
-        assertFalse(testCharacter.isCollided(testPowerUp1));
-        assertFalse(testCharacter.isCollided(testBlock2));
     }
 }

@@ -1,5 +1,3 @@
-package modeltests;
-
 import model.Hazard;
 import model.Position;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,8 +17,8 @@ public class HazardTest {
         assertEquals(10, testHazard.getPosition().getPositionX());
         assertEquals(10, testHazard.getPosition().getPositionY());
         assertEquals("hazard", testHazard.getName());
-        assertEquals(14, testHazard.getRightBoundX());
-        assertEquals(6, testHazard.getLeftBoundX());
+        assertEquals(13, testHazard.getRightBoundX());
+        assertEquals(7, testHazard.getLeftBoundX());
         assertEquals(1, testHazard.getVelocity());
         assertEquals(1, testHazard.getDirection());
     }
@@ -39,6 +37,19 @@ public class HazardTest {
         testHazard.changeDir();
         testHazard.move();
         assertEquals(11, testHazard.getPosition().getPositionX());
+        assertEquals(10, testHazard.getPosition().getPositionY());
+    }
+
+    @Test
+    void testMoveAutoChangeDir() {
+        testHazard.move();
+        testHazard.move();
+        testHazard.move();
+        assertEquals(13, testHazard.getPosition().getPositionX());
+        testHazard.move();
+        testHazard.move();
+        testHazard.move();
+        assertEquals(10, testHazard.getPosition().getPositionX());
         assertEquals(10, testHazard.getPosition().getPositionY());
     }
 

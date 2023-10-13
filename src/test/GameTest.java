@@ -1,5 +1,3 @@
-package modeltests;
-
 import model.*;
 import model.Character;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +29,9 @@ class GameTest {
         testBlock5 = new Block(new Position(12,18));
         testBlock6 = new Block(new Position(10,18));
         testPowerUp1 = new PowerUp(new Position(11, 18), "speedup");
-        testPowerUp2 = new PowerUp(new Position(9, 18), "invulnerable");
+        testPowerUp2 = new PowerUp(new Position(9, 18), "invulnerability");
         testPowerUp3 = new PowerUp(new Position(13, 18), "speedup");
-        testPowerUp4 = new PowerUp(new Position(7, 18), "invulnerable");
+        testPowerUp4 = new PowerUp(new Position(7, 18), "invulnerability");
         testHazard = new Hazard(new Position(10,17));
     }
 
@@ -59,11 +57,11 @@ class GameTest {
         Character character = testGame.getCharacter();
 
         character.setVelocityX(1);
-        testGame.moveResolveCollisions();
+        testGame.moveResolveCollisionsX();
         assertEquals(10, character.getPosition().getPositionX());
 
         character.setVelocityX(-2);
-        testGame.moveResolveCollisions();
+        testGame.moveResolveCollisionsX();
         assertEquals(9, character.getPosition().getPositionX());
     }
 
@@ -74,18 +72,18 @@ class GameTest {
         Character character = testGame.getCharacter();
 
         character.setVelocityY(2);
-        testGame.moveResolveCollisions();
+        testGame.moveResolveCollisionsY();
         assertEquals(20, character.getPosition().getPositionY());
 
         character.setVelocityY(-2);
         testGame.setInvulnerabilityEnd(1);
-        testGame.moveResolveCollisions();
-        testGame.moveResolveCollisions();
+        testGame.moveResolveCollisionsY();
+        testGame.moveResolveCollisionsY();
         assertEquals(16, character.getPosition().getPositionY());
 
         character.setVelocityY(1);
         testGame.setTime(2);
-        testGame.moveResolveCollisions();
+        testGame.moveResolveCollisionsY();
         assertTrue(testGame.isEnded());
     }
 
@@ -94,28 +92,31 @@ class GameTest {
         testGame.addBlock(testBlock5);
         Character character = testGame.getCharacter();
 
-        character.setVelocityX(2);
         character.setVelocityY(-2);
+        character.setVelocityX(2);
         testGame.moveResolveCollisions();
-        assertEquals(11, character.getPosition().getPositionX());
         assertEquals(18, character.getPosition().getPositionY());
+        assertEquals(11, character.getPosition().getPositionX());
 
         testGame.addBlock(testBlock6);
         character.setPosition(new Position(10, 20));
         testGame.moveResolveCollisions();
+        assertEquals(19, character.getPosition().getPositionY());
         assertEquals(12, character.getPosition().getPositionX());
-        assertEquals(17, character.getPosition().getPositionY());
     }
 
     @Test
     void testCheckCollisionList() {
         testGame.addBlock(testBlock1);
         testGame.addBlock(testBlock2);
+        Position testPosition1 = new Position(11, 20);
+        Position testPosition2 = new Position(8, 20);
+
         assertEquals(0, testGame.checkCollisionList(testGame.getCharacter().getPosition()).size());
-        assertEquals(1, testGame.checkCollisionList(new Position(11, 20)).size());
-        assertTrue(testGame.checkCollisionList(new Position(11, 20)).contains(testBlock1));
-        assertEquals(1, testGame.checkCollisionList(new Position(8, 20)).size());
-        assertTrue(testGame.checkCollisionList(new Position(8, 20)).contains(testBlock2));
+        assertEquals(1, testGame.checkCollisionList(testPosition1).size());
+        assertTrue(testGame.checkCollisionList(testPosition1).contains(testBlock1));
+        assertEquals(1, testGame.checkCollisionList(testPosition2).size());
+        assertTrue(testGame.checkCollisionList(testPosition2).contains(testBlock2));
     }
 
     @Test
@@ -201,14 +202,15 @@ class GameTest {
         assertEquals(2, testGame.getCharacter().getVelocityXMultiplier());
 
         testGame.usePowerUp(testPowerUp3);
-        assertEquals(60, testGame.getSpeedEnd());
+        assertEquals(30, testGame.getSpeedEnd());
         assertNull(testPowerUp3.getKeyAssignment());
         assertEquals(3,testGame.getAvailableKeys().size());
         assertEquals(0,testGame.getInventory().size());
 
         testGame.collectPowerUp(testPowerUp4);
         assertEquals("1",testPowerUp4.getKeyAssignment());
-        assertEquals(60, testGame.getInvulnerabilityEnd());
+        testGame.usePowerUp(testPowerUp4);
+        assertEquals(30, testGame.getInvulnerabilityEnd());
         assertNull(testPowerUp4.getKeyAssignment());
         assertEquals(3,testGame.getAvailableKeys().size());
         assertEquals(0,testGame.getInventory().size());
@@ -225,5 +227,33 @@ class GameTest {
         assertTrue(testGame.getBlocks().contains(testBlock2));
         assertTrue(testGame.getBlocks().contains(testBlock3));
         assertEquals(3, testGame.getBlocks().size());
+    }
+
+    @Test
+    void testIsCollidedSetX() {
+        testGame.addBlock(testBlock1);
+        testGame.addBlock(testBlock2);
+        testGame.addBlock(testBlock4);
+        testGame.addBlock(testPowerUp1);
+
+        Position testPosition = new Position(11, 20);
+        assertTrue(testGame.isCollided(testPosition, testBlock1));
+        assertFalse(testGame.isCollided(testPosition, testBlock2));
+        assertFalse(testGame.isCollided(testPosition, testBlock4));
+        assertFalse(testGame.isCollided(testPosition, testPowerUp1));
+    }
+
+    @Test
+    void testIsCollidedSetY() {
+        testGame.addBlock(testBlock1);
+        testGame.addBlock(testBlock3);
+        testGame.addBlock(testBlock4);
+        testGame.addBlock(testPowerUp1);
+
+        Position testPosition = new Position(10, 21);
+        assertFalse(testGame.isCollided(testPosition, testBlock1));
+        assertFalse(testGame.isCollided(testPosition, testBlock3));
+        assertTrue(testGame.isCollided(testPosition, testBlock4));
+        assertFalse(testGame.isCollided(testPosition, testPowerUp1));
     }
 }

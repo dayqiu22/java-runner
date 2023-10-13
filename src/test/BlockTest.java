@@ -1,5 +1,3 @@
-package modeltests;
-
 import model.Block;
 import model.Position;
 import org.junit.jupiter.api.BeforeEach;
