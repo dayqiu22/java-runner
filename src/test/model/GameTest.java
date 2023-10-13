@@ -321,9 +321,14 @@ class GameTest {
         assertEquals(1,testGame.getInventory().size());
         assertEquals(2, testGame.getCharacter().getVelocityXMultiplier());
 
+        testGame.collectPowerUp(testPowerUp1);
+        testGame.getCharacter().setVelocityXMultiplier(-1);
+        testGame.usePowerUp(testPowerUp1);
+        assertEquals(-2, testGame.getCharacter().getVelocityXMultiplier());
+
         testGame.usePowerUp(testPowerUp3);
         assertEquals(30, testGame.getSpeedEnd());
-        assertEquals(2, testGame.getCharacter().getVelocityXMultiplier());
+        assertEquals(-2, testGame.getCharacter().getVelocityXMultiplier());
         assertNull(testPowerUp3.getKeyAssignment());
         assertEquals(3,testGame.getAvailableKeys().size());
         assertEquals(0,testGame.getInventory().size());
