@@ -38,7 +38,7 @@ class GameTest {
         testPowerUp1 = new PowerUp(new Position(11, 18), "speedup");
         testPowerUp2 = new PowerUp(new Position(9, 18), "invulnerability");
         testPowerUp3 = new PowerUp(new Position(13, 18), "speedup");
-        testPowerUp4 = new PowerUp(new Position(7, 18), "invulnerability");
+        testPowerUp4 = new PowerUp(new Position(10, 18), "invulnerability");
         testHazard1 = new Hazard(new Position(10,17));
         testHazard2 = new Hazard(new Position(12,20));
     }
@@ -127,6 +127,7 @@ class GameTest {
     void testTickSimulateJumpAndCollect() {
         testGame.addBlock(testBlock4);
         testGame.addBlock(testPowerUp1);
+        testGame.addBlock(testPowerUp4);
         Character character = testGame.getCharacter();
         character.setVelocityY(-3);
         character.setVelocityX(1);
@@ -135,8 +136,9 @@ class GameTest {
         assertEquals(-2, character.getVelocityY());
         assertEquals(18, character.getPosition().getPositionY());
         assertEquals(11, character.getPosition().getPositionX());
-        assertEquals(1, testGame.getInventory().size());
+        assertEquals(2, testGame.getInventory().size());
         assertTrue(testGame.getInventory().contains(testPowerUp1));
+        assertTrue(testGame.getInventory().contains(testPowerUp4));
 
         testGame.tick();
         testGame.tick();
@@ -157,7 +159,8 @@ class GameTest {
         testGame.moveResolveCollisionsX();
         assertEquals(10, character.getPosition().getPositionX());
 
-        character.setVelocityX(-2);
+        character.setVelocityX(1);
+        character.setVelocityXMultiplier(-2);
         testGame.moveResolveCollisionsX();
         assertEquals(9, character.getPosition().getPositionX());
     }

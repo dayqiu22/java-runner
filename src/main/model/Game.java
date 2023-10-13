@@ -9,14 +9,13 @@ public class Game {
     public static final int TICKS_PER_SECOND = 10;
     private static final int TENTH_PER_TICK = 1;
     private static final int POWER_UP_TIME = 30;
-    private static final String BLOCK = "block";
-    private static final String SPEED = "speedup";
-    private static final String INVULNERABLE = "invulnerability";
-    private static final String HAZARD = "hazard";
+    public static final String BLOCK = "block";
+    public static final String SPEED = "speedup";
+    public static final String INVULNERABLE = "invulnerability";
+    public static final String HAZARD = "hazard";
     private static final int GRAVITY = 1;
     private final int maxX;
     private final int maxY;
-    private final Position startingPosition;
     private final Character character;
     private List<Block> blocks;
     private List<PowerUp> inventory;
@@ -31,8 +30,8 @@ public class Game {
     public Game(int maxX, int maxY) {
         this.maxX = maxX;
         this.maxY = maxY;
-        this.startingPosition = new Position(this.maxX / 3, this.maxY * 2 / 3);
-        this.character = new Character(this.startingPosition);
+        Position startingPosition = new Position(this.maxX / 3, this.maxY * 2 / 3);
+        this.character = new Character(startingPosition);
         this.blocks = new ArrayList<>();
         this.inventory = new ArrayList<>();
         this.availableKeys = new ArrayList<>();
