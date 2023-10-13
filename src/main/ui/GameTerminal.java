@@ -19,13 +19,12 @@ import model.Character;
 import java.io.IOException;
 import java.util.List;
 
-
 public class GameTerminal {
-    private static final char CHARACTER = '⛹';
-    private static final char BLOCK = '▣';
-    private static final char HAZARD = '❌';
-    private static final char SPEED = '⚡';
-    private static final char INVULNERABLE = '☯';
+    private static final char CHARACTER = '\u265E';
+    private static final char BLOCK = '\u25a3';
+    private static final char HAZARD = '\u2716';
+    private static final char SPEED = '\u26a1';
+    private static final char INVULNERABLE = '\u262f';
     private Game game;
     private Screen screen;
     private WindowBasedTextGUI endGui;
