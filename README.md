@@ -9,7 +9,7 @@ The basic features of the game will include:
 
 - Left, right, and jumping movement
 - Platforms to maneuver through
-- ***ENEMIES*** who may move
+- ***HAZARDS*** that players must avoid
 - Unique **POWER-UPS** to pick up and use
 - Saving and loading of game data
 
