@@ -113,14 +113,14 @@ public class Game {
             List<Block> collided = checkCollisionList(this.character.getPosition());
             if (collided.size() != 0) {
                 String collisionType = collided.get(0).getName();
-                if (collisionType.equals(BLOCK)) {
-                    this.character.getPosition().setPositionY(originalY);
-                    this.character.setVelocityY(0);
-                } else if (collisionType.equals(SPEED) || collisionType.equals(INVULNERABLE)) {
-                    collectPowerUp((PowerUp) collided.get(0));
-                } else if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
+                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
                     this.ended = true;
                     break;
+                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
+                    collectPowerUp((PowerUp) collided.get(0));
+                } else if (collisionType.equals(BLOCK)) {
+                    this.character.getPosition().setPositionY(originalY);
+                    this.character.setVelocityY(0);
                 }
             }
         }
@@ -146,14 +146,14 @@ public class Game {
             List<Block> collided = checkCollisionList(this.character.getPosition());
             if (collided.size() != 0) {
                 String collisionType = collided.get(0).getName();
-                if (collisionType.equals(BLOCK)) {
-                    this.character.getPosition().setPositionX(originalX);
-                    this.character.setVelocityX(0);
-                } else if (collisionType.equals(SPEED) || collisionType.equals(INVULNERABLE)) {
-                    collectPowerUp((PowerUp) collided.get(0));
-                } else if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
+                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
                     this.ended = true;
                     break;
+                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
+                    collectPowerUp((PowerUp) collided.get(0));
+                } else if (collisionType.equals(BLOCK)) {
+                    this.character.getPosition().setPositionX(originalX);
+                    this.character.setVelocityX(0);
                 }
             }
         }
@@ -239,7 +239,7 @@ public class Game {
         } else {
             this.speedEnd = this.time + POWER_UP_TIME;
             int currentMultiplier = this.character.getVelocityXMultiplier();
-            if (currentMultiplier == 1 || currentMultiplier == -1) {
+            if (currentMultiplier == 1 ^ currentMultiplier == -1) {
                 this.character.setVelocityXMultiplier(currentMultiplier * 2);
             }
         }

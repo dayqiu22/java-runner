@@ -152,17 +152,29 @@ class GameTest {
     @Test
     void testMoveResolveCollisionsX() {
         testGame.addBlock(testBlock1);
-        testGame.addBlock(testBlock2);
+        testGame.addBlock(testHazard2);
         Character character = testGame.getCharacter();
 
         character.setVelocityX(1);
         testGame.moveResolveCollisionsX();
+        assertFalse(testGame.isEnded());
+        testGame.setInvulnerabilityEnd(1);
+        testGame.moveResolveCollisionsX();
         assertEquals(10, character.getPosition().getPositionX());
 
+        testGame.getBlocks().remove(testBlock1);
         character.setVelocityX(1);
-        character.setVelocityXMultiplier(-2);
+        character.setVelocityXMultiplier(2);
         testGame.moveResolveCollisionsX();
-        assertEquals(9, character.getPosition().getPositionX());
+        testGame.moveResolveCollisionsX();
+        assertFalse(testGame.isEnded());
+        assertEquals(14, character.getPosition().getPositionX());
+
+        character.setVelocityXMultiplier(-2);
+        testGame.setTime(2);
+        testGame.moveResolveCollisionsX();
+        assertEquals(12, character.getPosition().getPositionX());
+        assertTrue(testGame.isEnded());
     }
 
     @Test
@@ -173,10 +185,12 @@ class GameTest {
 
         character.setVelocityY(2);
         testGame.moveResolveCollisionsY();
+        assertFalse(testGame.isEnded());
+        testGame.setInvulnerabilityEnd(1);
+        testGame.moveResolveCollisionsY();
         assertEquals(20, character.getPosition().getPositionY());
 
         character.setVelocityY(-2);
-        testGame.setInvulnerabilityEnd(1);
         testGame.moveResolveCollisionsY();
         testGame.moveResolveCollisionsY();
         assertEquals(16, character.getPosition().getPositionY());
