@@ -19,6 +19,7 @@ import model.Character;
 import java.io.IOException;
 import java.util.List;
 
+@SuppressWarnings({"checkstyle:AvoidEscapedUnicodeCharacters", "checkstyle:SuppressWarnings"})
 public class GameTerminal {
     private static final char CHARACTER = '\u265E';
     private static final char BLOCK = '\u25a3';
