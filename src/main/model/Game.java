@@ -94,11 +94,11 @@ public class Game {
             List<Block> collided = checkCollisionList(charaPosition);
             if (collided.size() != 0) {
                 Block firstCollision = collided.get(0);
-                if (firstCollision.getName() == BLOCK) {
+                if (firstCollision.getName().equals(BLOCK)) {
                     charaPosition.setPositionY(originalY);
-                } else if (firstCollision.getName() == SPEED || firstCollision.getName() == INVULNERABLE) {
+                } else if (firstCollision.getName().equals(SPEED) || firstCollision.getName().equals(INVULNERABLE)) {
                     collectPowerUp((PowerUp) firstCollision);
-                } else if (firstCollision.getName() == HAZARD) {
+                } else if (firstCollision.getName().equals(HAZARD)) {
                     this.ended = true;
                 }
             }
@@ -125,11 +125,11 @@ public class Game {
             List<Block> collided = checkCollisionList(charaPosition);
             if (collided.size() != 0) {
                 Block firstCollision = collided.get(0);
-                if (firstCollision.getName() == BLOCK) {
+                if (firstCollision.getName().equals(BLOCK)) {
                     charaPosition.setPositionX(originalX);
-                } else if (firstCollision.getName() == SPEED || firstCollision.getName() == INVULNERABLE) {
+                } else if (firstCollision.getName().equals(SPEED) || firstCollision.getName().equals(INVULNERABLE)) {
                     collectPowerUp((PowerUp) firstCollision);
-                } else if (firstCollision.getName() == HAZARD) {
+                } else if (firstCollision.getName().equals(HAZARD)) {
                     this.ended = true;
                 }
             }
@@ -201,9 +201,9 @@ public class Game {
         this.inventory.remove(pu);
         this.availableKeys.add(pu.getKeyAssignment());
         pu.setKeyAssignment(null);
-        if (pu.getName() == INVULNERABLE) {
+        if (pu.getName().equals(INVULNERABLE)) {
             this.invulnerabilityEnd = this.time + POWER_UP_TIME;
-        } else if (pu.getName() == SPEED) {
+        } else if (pu.getName().equals(SPEED)) {
             this.speedEnd = this.time + POWER_UP_TIME;
             int currentMultiplier = this.character.getVelocityXMultiplier();
             this.character.setVelocityXMultiplier(currentMultiplier * 2);

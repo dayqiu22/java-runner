@@ -4,7 +4,6 @@ package model;
 // within a certain range from its starting position
 public class Hazard extends Block {
     private static final int RANGE = 3;
-    private final Position startingPosition;
     private final int leftBoundX;
     private final int rightBoundX;
     private final int velocity;
@@ -16,9 +15,8 @@ public class Hazard extends Block {
     public Hazard(Position position) {
         super(position);
         this.name = "hazard";
-        this.startingPosition = position;
-        this.leftBoundX = startingPosition.getPositionX() - RANGE;
-        this.rightBoundX = startingPosition.getPositionX() + RANGE;
+        this.leftBoundX = position.getPositionX() - RANGE;
+        this.rightBoundX = position.getPositionX() + RANGE;
         this.velocity = 1;
         this.direction = 1;
     }
