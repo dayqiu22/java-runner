@@ -19,13 +19,12 @@ import model.Character;
 import java.io.IOException;
 import java.util.List;
 
-@SuppressWarnings({"checkstyle:AvoidEscapedUnicodeCharacters", "checkstyle:SuppressWarnings"})
 public class GameTerminal {
-    private static final char CHARACTER = '\u265E';
-    private static final char BLOCK = '\u25a3';
-    private static final char HAZARD = '\u2716';
-    private static final char SPEED = '\u26a1';
-    private static final char INVULNERABLE = '\u262f';
+    private static final char CHARACTER = '8';
+    private static final char BLOCK = '#';
+    private static final char HAZARD = 'X';
+    private static final char SPEED = '>';
+    private static final char INVULNERABLE = '@';
     private Game game;
     private Screen screen;
     private WindowBasedTextGUI endGui;
