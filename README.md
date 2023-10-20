@@ -26,3 +26,5 @@ like any potential player to have an enjoyable time playing the game I made.
 - As a player, I want to be able to see the list of power-ups I currently possess.
 - As a player, I want to be able to use my power-ups.
 - As a player, I want to be able to move my character left, right, and jump.
+- As a player, I want to be able to save my game state and quit in the options' menu.
+- As a player, I want to be able to load a saved game state or start a new game in the main menu.

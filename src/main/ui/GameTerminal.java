@@ -38,26 +38,21 @@ public class GameTerminal {
         testgame.addBlock(new Block(new Position(27, 15)));
         testgame.addBlock(new Block(new Position(28, 16)));
         testgame.addBlock(new Block(new Position(29, 16)));
-        testgame.addBlock(new Block(new Position(30, 17)));
-        testgame.addBlock(new Block(new Position(31, 17)));
-        testgame.addBlock(new Block(new Position(32, 17)));
-        testgame.addBlock(new Block(new Position(33, 17)));
-        testgame.addBlock(new Block(new Position(34, 17)));
-        testgame.addBlock(new Block(new Position(35, 17)));
-        testgame.addBlock(new Block(new Position(35, 16)));
-        testgame.addBlock(new Block(new Position(25, 15)));
-        testgame.addBlock(new Block(new Position(24, 15)));
-        testgame.addBlock(new Block(new Position(23, 15)));
-        testgame.addBlock(new Block(new Position(22, 15)));
-        testgame.addBlock(new Block(new Position(21, 15)));
-        testgame.addBlock(new Block(new Position(20, 15)));
-        testgame.addBlock(new Block(new Position(19, 15)));
-        testgame.addBlock(new Block(new Position(18, 15)));
-        testgame.addBlock(new Block(new Position(18, 14)));
+        for (int i = 30; i < 70; i++) {
+            testgame.addBlock(new Block(new Position(i, 17)));
+        }
+        testgame.addBlock(new Block(new Position(69, 16)));
+        for (int i = 25; i > 4; i--) {
+            testgame.addBlock(new Block(new Position(i, 15)));
+        }
+        testgame.addBlock(new Block(new Position(5, 14)));
 
         testgame.addBlock(new Hazard(new Position(20, 14)));
         testgame.addBlock(new PowerUp(new Position(28, 14), Game.INVULNERABLE));
         testgame.addBlock(new PowerUp(new Position(33, 16), Game.SPEED));
+        testgame.addBlock(new Hazard(new Position(50, 16)));
+        testgame.addBlock(new PowerUp(new Position(59,16), Game.INVULNERABLE));
+        testgame.addBlock(new PowerUp(new Position(8, 14), Game.SPEED));
     }
 
     // based on startGame() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
