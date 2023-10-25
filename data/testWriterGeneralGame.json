@@ -11,47 +11,7 @@
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 25
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 24
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 23
-        },
-        {
-            "positionY": 15,
-            "name": "block",
             "positionX": 22
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 21
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 20
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 19
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 18
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 17
         },
         {
             "positionY": 15,
@@ -61,7 +21,27 @@
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 15
+            "positionX": 12
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 18
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 13
+        },
+        {
+            "positionY": 16,
+            "name": "hazard",
+            "positionX": 50
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 20
         },
         {
             "positionY": 15,
@@ -71,12 +51,32 @@
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 13
+            "positionX": 25
         },
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 12
+            "positionX": 7
+        },
+        {
+            "positionY": 14,
+            "name": "hazard",
+            "positionX": 20
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 15
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 8
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 6
         },
         {
             "positionY": 15,
@@ -91,22 +91,12 @@
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 9
+            "positionX": 24
         },
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 8
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 7
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 6
+            "positionX": 21
         },
         {
             "positionY": 15,
@@ -114,14 +104,24 @@
             "positionX": 5
         },
         {
-            "positionY": 14,
-            "name": "hazard",
-            "positionX": 20
+            "positionY": 15,
+            "name": "block",
+            "positionX": 19
         },
         {
-            "positionY": 16,
-            "name": "hazard",
-            "positionX": 50
+            "positionY": 15,
+            "name": "block",
+            "positionX": 9
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 23
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 17
         }
     ],
     "maxX": 78,

@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
 
 // Class representing the game as a whole, handles movement,
 // handles power-up inventory (max 3 power-ups) and usage
@@ -20,7 +21,7 @@ public class Game {
     private final int maxX;
     private final int maxY;
     private Character character;
-    private List<Block> blocks;
+    private HashSet<Block> blocks;
     private List<PowerUp> inventory;
     private List<String> availableKeys;
     private int time;
@@ -35,7 +36,7 @@ public class Game {
         this.maxY = maxY;
         Position startingPosition = new Position(this.maxX / 3, this.maxY * 2 / 3);
         this.character = new Character(startingPosition);
-        this.blocks = new ArrayList<>();
+        this.blocks = new HashSet<>();
         this.inventory = new ArrayList<>();
         this.availableKeys = new ArrayList<>();
         this.availableKeys.add("1");
@@ -324,7 +325,7 @@ public class Game {
         this.character = character;
     }
 
-    public List<Block> getBlocks() {
+    public HashSet<Block> getBlocks() {
         return blocks;
     }
 

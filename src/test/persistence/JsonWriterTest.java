@@ -58,12 +58,14 @@ class JsonWriterTest extends JsonTestHelpers {
                 state.addBlock(new Block(new Position(i, 15)));
             }
             state.addBlock(new Hazard(new Position(20, 14)));
-            state.addBlock(new PowerUp(new Position(33, 16), Game.SPEED));
-            state.addBlock(new PowerUp(new Position(28, 14), Game.INVULNERABLE));
+            PowerUp testSpeed = new PowerUp(new Position(33, 16), Game.SPEED);
+            PowerUp testInvulnerability = new PowerUp(new Position(28, 14), Game.INVULNERABLE);
+            state.addBlock(testSpeed);
+            state.addBlock(testInvulnerability);
             state.addBlock(new Hazard(new Position(50, 16)));
 
-            state.collectPowerUp((PowerUp) state.getBlocks().get(22));
-            state.collectPowerUp((PowerUp) state.getBlocks().get(22));
+            state.collectPowerUp(testSpeed);
+            state.collectPowerUp(testInvulnerability);
             state.usePowerUp(state.getInventory().get(0));
             state.getCharacter().setPosition(new Position(27, 12));
             state.getCharacter().setVelocityY(-2);
