@@ -1,0 +1,378 @@
+{
+  "character": {
+    "positionY": 16,
+    "velocityXMultiplier": -2,
+    "velocityX": 1,
+    "velocityY": 0,
+    "positionX": 39
+  },
+  "maxY": 22,
+  "blocks": [
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 26
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 27
+    },
+    {
+      "positionY": 16,
+      "name": "block",
+      "positionX": 28
+    },
+    {
+      "positionY": 16,
+      "name": "block",
+      "positionX": 29
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 30
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 31
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 32
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 33
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 34
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 35
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 36
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 37
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 38
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 39
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 40
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 41
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 42
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 43
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 44
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 45
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 46
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 47
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 48
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 49
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 50
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 51
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 52
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 53
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 54
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 55
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 56
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 57
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 58
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 59
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 60
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 61
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 62
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 63
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 64
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 65
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 66
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 67
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 68
+    },
+    {
+      "positionY": 17,
+      "name": "block",
+      "positionX": 69
+    },
+    {
+      "positionY": 16,
+      "name": "block",
+      "positionX": 69
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 25
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 24
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 23
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 22
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 21
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 20
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 19
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 18
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 17
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 16
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 15
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 14
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 13
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 12
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 11
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 10
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 9
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 8
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 7
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 6
+    },
+    {
+      "positionY": 15,
+      "name": "block",
+      "positionX": 5
+    },
+    {
+      "positionY": 14,
+      "name": "block",
+      "positionX": 5
+    },
+    {
+      "positionY": 14,
+      "name": "hazard",
+      "positionX": 20
+    },
+    {
+      "positionY": 16,
+      "name": "hazard",
+      "positionX": 50
+    },
+    {
+      "positionY": 16,
+      "name": "invulnerability",
+      "positionX": 59
+    },
+    {
+      "positionY": 14,
+      "name": "speedup",
+      "positionX": 8
+    }
+  ],
+  "maxX": 78,
+  "invulnerabilityEnd": 0,
+  "ended": false,
+  "time": 67,
+  "inventory": [{
+    "positionY": 14,
+    "keyAssignment": "2",
+    "name": "invulnerability",
+    "positionX": 28
+  }],
+  "speedEnd": 95
+}

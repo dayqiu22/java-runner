@@ -1,0 +1,17 @@
+{
+    "character": {
+        "positionY": 14,
+        "velocityXMultiplier": 1,
+        "velocityX": 0,
+        "velocityY": 0,
+        "positionX": 26
+    },
+    "maxY": 22,
+    "blocks": [],
+    "maxX": 78,
+    "invulnerabilityEnd": 0,
+    "ended": false,
+    "time": 0,
+    "inventory": [],
+    "speedEnd": 0
+}

@@ -1,5 +1,7 @@
 package model;
 
+import org.json.JSONObject;
+
 // Class representing the player's character, its position, velocities (grid units/tick),
 // and x-direction velocity multiplier (handles direction and power-up modifier)
 public class Character {
@@ -16,6 +18,17 @@ public class Character {
         this.velocityX = STARTING_VELOCITY;
         this.velocityXMultiplier = 1;
         this.velocityY = STARTING_VELOCITY;
+    }
+
+    // EFFECTS: returns this as a JSONObject
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("positionX", this.position.getPositionX());
+        json.put("positionY", this.position.getPositionY());
+        json.put("velocityX", this.velocityX);
+        json.put("velocityXMultiplier", this.velocityXMultiplier);
+        json.put("velocityY", this.velocityY);
+        return json;
     }
 
     public Position getPosition() {

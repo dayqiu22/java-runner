@@ -15,11 +15,17 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import model.Character;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+// Represents the user interface and experience of the game, including all graphics,
+// animations, and handles user inputs
 public class GameTerminal {
+    private static final String JSON_STORE = "./data/save-state.json";
     private static final char CHARACTER = '8';
     private static final char BLOCK = '#';
     private static final char HAZARD = 'X';
@@ -30,6 +36,8 @@ public class GameTerminal {
     private WindowBasedTextGUI endGui;
     private int centerX;
     private int keyY;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     // temporary method for creating a test map for developers to test the UI
     private void initializeTestMap(Game testgame) {
@@ -55,21 +63,54 @@ public class GameTerminal {
         testgame.addBlock(new PowerUp(new Position(8, 14), Game.SPEED));
     }
 
+    // MODIFIES: this
+    // EFFECTS: draws the main menu with options to start a new game or load a saved game
+    private void drawMainMenu() {
+        TextGraphics text = screen.newTextGraphics();
+        text.setForegroundColor(TextColor.ANSI.WHITE);
+        text.putString(30, 11, "Select an option: ");
+
+        text = this.screen.newTextGraphics();
+        text.setForegroundColor(TextColor.ANSI.GREEN);
+        text.putString(25, 12, "New Game (N)  ||  Load Game (L)");
+    }
+
+    // modelled after handleUserInputs() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
+    // MODIFIES: this
+    // EFFECTS: handles inputs for creating a new game or loading a game
+    private void handleMenuInputs() throws IOException {
+        TerminalSize terminalSize = this.screen.getTerminalSize();
+        KeyStroke key = null;
+        while (key == null || ((key.getCharacter() != 'n') && (key.getCharacter() != 'l'))) {
+            key = this.screen.pollInput();
+        }
+        if (key.getCharacter() == 'n') {
+            this.game = new Game(terminalSize.getColumns() - 2,terminalSize.getRows() - 2);
+            initializeTestMap(this.game);
+        } else {
+            loadGame();
+        }
+    }
+
     // based on startGame() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // REQUIRES: a terminal does not already exist
     // MODIFIES: this
     // EFFECTS: initializes the terminal screen, the game and game map,
     // and starts the tick cycle of the game state
     public void startGame() throws IOException, InterruptedException {
+        this.jsonWriter = new JsonWriter(JSON_STORE);
+        this.jsonReader = new JsonReader(JSON_STORE);
         this.screen = new DefaultTerminalFactory().createScreen();
         this.screen.startScreen();
 
-        TerminalSize terminalSize = this.screen.getTerminalSize();
+        this.screen.setCursorPosition(new TerminalPosition(0, 0));
+        this.screen.clear();
+        drawMainMenu();
+        this.screen.refresh();
+        handleMenuInputs();
 
-        this.game = new Game(terminalSize.getColumns() - 2,terminalSize.getRows() - 2);
-        centerX = game.getMaxX() / 2;
-        keyY = game.getMaxY() - 1;
-        initializeTestMap(this.game);
+        this.centerX = game.getMaxX() / 2;
+        this.keyY = game.getMaxY() - 1;
         cycleTicks();
     }
 
@@ -152,6 +193,9 @@ public class GameTerminal {
             case ('3'):
                 searchAndUse("3");
                 break;
+            case ('s'):
+                saveGame();
+                break;
             default:
         }
     }
@@ -194,7 +238,7 @@ public class GameTerminal {
             return;
         }
 
-        drawTime();
+        drawHUD();
         drawBlocks();
         drawCharacter();
         drawInventory();
@@ -220,7 +264,7 @@ public class GameTerminal {
     // based on drawScore() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // MODIFIES: this
     // EFFECTS: displays the time since game start in seconds
-    private void drawTime() {
+    private void drawHUD() {
         TextGraphics text = screen.newTextGraphics();
         text.setForegroundColor(TextColor.ANSI.WHITE);
         text.putString(1, 0, "TIME: ");
@@ -228,6 +272,10 @@ public class GameTerminal {
         text = this.screen.newTextGraphics();
         text.setForegroundColor(TextColor.ANSI.GREEN);
         text.putString(8, 0, String.valueOf(this.game.getTime() / Game.TICKS_PER_SECOND));
+
+        text = this.screen.newTextGraphics();
+        text.setForegroundColor(TextColor.ANSI.YELLOW);
+        text.putString(50, 0, "PRESS (S) TO SAVE PROGRESS");
     }
 
     // MODIFIES: this
@@ -297,4 +345,26 @@ public class GameTerminal {
         text.putString(p.getPositionX(), p.getPositionY(), String.valueOf(c));
     }
 
+    // modelled after JsonSerializationDemo provided by CPSC 210 at UBC
+    // EFFECTS: saves the game state to file
+    private void saveGame() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(this.game);
+            jsonWriter.close();
+        } catch (FileNotFoundException e) {
+            System.exit(1);
+        }
+    }
+
+    // modelled after JsonSerializationDemo provided by CPSC 210 at UBC
+    // MODIFIES: this
+    // EFFECTS: loads game state from file
+    private void loadGame() {
+        try {
+            this.game = jsonReader.read();
+        } catch (IOException e) {
+            System.exit(1);
+        }
+    }
 }

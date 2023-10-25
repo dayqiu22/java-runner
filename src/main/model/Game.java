@@ -1,5 +1,8 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +19,7 @@ public class Game {
     private static final int GRAVITY = 1;
     private final int maxX;
     private final int maxY;
-    private final Character character;
+    private Character character;
     private List<Block> blocks;
     private List<PowerUp> inventory;
     private List<String> availableKeys;
@@ -88,7 +91,7 @@ public class Game {
     // EFFECTS: moves character vertically and checks all blocks for collisions,
     // behaviour depends on block in collision with; then moves character
     // horizontally and repeat the same procedure
-    public void moveResolveCollisions() {
+    protected void moveResolveCollisions() {
         moveResolveCollisionsY();
         moveResolveCollisionsX();
     }
@@ -100,7 +103,7 @@ public class Game {
     // stop movement of character 1 position back if collided with a normal block,
     // set game to ended if collision occurs with a hazard while not invulnerable;
     // also handles collecting power-ups using a helper method
-    public void moveResolveCollisionsY() {
+    protected void moveResolveCollisionsY() {
         int vy = this.character.getVelocityY();
         int unitVelocity = 1;
         if (vy < 0) {
@@ -134,7 +137,7 @@ public class Game {
     // stop movement of character 1 position back if collided with a normal block,
     // set game to ended if collision occurs with a hazard while not invulnerable;
     // also handles collecting power-ups using a helper method
-    public void moveResolveCollisionsX() {
+    protected void moveResolveCollisionsX() {
         int vx = this.character.getVelocityX() * this.character.getVelocityXMultiplier();
         int unitVelocity = 1;
         if (vx < 0) {
@@ -162,7 +165,7 @@ public class Game {
     }
 
     // EFFECTS: returns true if p collided with the given block
-    public boolean isCollided(Position p, Block block) {
+    protected boolean isCollided(Position p, Block block) {
         int blockX = block.getPosition().getPositionX();
         int blockY = block.getPosition().getPositionY();
         return (p.getPositionX() == blockX && p.getPositionY() == blockY);
@@ -171,7 +174,7 @@ public class Game {
     // algorithm from Resolving Platform Collisions tutorial by Long Nguyen on YouTube
     // REQUIRES: list of blocks in the game to not be empty
     // EFFECTS: returns a list of blocks in collision with p
-    public List<Block> checkCollisionList(Position p) {
+    protected List<Block> checkCollisionList(Position p) {
         List<Block> collided = new ArrayList<>();
         for (Block block : blocks) {
             if (isCollided(p, block)) {
@@ -193,7 +196,7 @@ public class Game {
 
     // MODIFIES: this
     // EFFECTS: returns true if p is at the edge of the game (but not bottom)
-    public void resolveBoundaries() {
+    protected void resolveBoundaries() {
         Position charaPosition = this.character.getPosition();
         if (charaPosition.getPositionX() < 0) {
             charaPosition.setPositionX(0);
@@ -206,7 +209,7 @@ public class Game {
     }
 
     // EFFECTS: returns true if p is at the bottom edge of the game
-    public boolean atBottomBoundary(Position p) {
+    protected boolean atBottomBoundary(Position p) {
         return p.getPositionY() > maxY;
     }
 
@@ -248,6 +251,54 @@ public class Game {
         }
     }
 
+    // EFFECTS: returns this as a JSONObject
+    // no need to keep track of available keys as the loading of
+    // saved inventory will use a helper that assigns the original keys
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("maxX", this.maxX);
+        json.put("maxY", this.maxY);
+        json.put("character", this.character.toJson());
+        json.put("blocks", blocksToJson());
+        json.put("inventory", inventoryToJson());
+        json.put("time", this.time);
+        json.put("invulnerabilityEnd", this.invulnerabilityEnd);
+        json.put("speedEnd", this.speedEnd);
+        json.put("ended", this.ended);
+        return json;
+    }
+
+    // EFFECTS: returns blocks in the game in the form of a JSONArray
+    private JSONArray blocksToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Block b : this.blocks) {
+            jsonArray.put(b.toJson());
+        }
+        return jsonArray;
+    }
+
+    // EFFECTS: returns inventory of the player in the form of a JSON array
+    private JSONArray inventoryToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (PowerUp pu : this.inventory) {
+            jsonArray.put(pu.toJson());
+        }
+        return jsonArray;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: adds a power-up to the inventory
+    public void addPowerUpToInventory(PowerUp pu) {
+        this.inventory.add(pu);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: removes a key from available key assignments
+    public void removeAvailableKey(String key) {
+        this.availableKeys.remove(key);
+    }
 
     public int getInvulnerabilityEnd() {
         return invulnerabilityEnd;
@@ -267,6 +318,10 @@ public class Game {
 
     public Character getCharacter() {
         return character;
+    }
+
+    public void setCharacter(Character character) {
+        this.character = character;
     }
 
     public List<Block> getBlocks() {
@@ -291,6 +346,10 @@ public class Game {
 
     public boolean isEnded() {
         return ended;
+    }
+
+    public void setEnded(boolean ended) {
+        this.ended = ended;
     }
 
     public int getMaxX() {
