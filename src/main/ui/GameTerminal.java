@@ -154,7 +154,7 @@ public class GameTerminal {
         int currentMultiplier = this.game.getCharacter().getVelocityXMultiplier();
         switch (key.getKeyType()) {
             case Character:
-                handleCharacter(key.getCharacter());
+                handleInputCharacter(key.getCharacter());
                 break;
             case ArrowRight:
                 kickStart();
@@ -177,7 +177,7 @@ public class GameTerminal {
     // EFFECTS: makes the character jump if space is pressed
     // and the character is currently on a platform;
     // a power-up may be used if '1', '2', or '3' is pressed
-    private void handleCharacter(char character) {
+    private void handleInputCharacter(char character) {
         switch (character) {
             case (' '):
                 if (this.game.onPlatform(game.getCharacter().getPosition())) {

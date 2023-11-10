@@ -11,8 +11,8 @@ import java.util.HashSet;
 // handles power-up inventory (max 3 power-ups) and usage
 public class Game {
     public static final int TICKS_PER_SECOND = 10;
-    private static final int TENTH_PER_TICK = 1;
-    private static final int POWER_UP_TIME = 30;
+    public static final int TENTH_PER_TICK = 1;
+    public static final int POWER_UP_TIME = 30;
     public static final String BLOCK = "block";
     public static final String SPEED = "speedup";
     public static final String INVULNERABLE = "invulnerability";
@@ -22,8 +22,7 @@ public class Game {
     private final int maxY;
     private Character character;
     private HashSet<Block> blocks;
-    private List<PowerUp> inventory;
-    private List<String> availableKeys;
+    private Inventory inventory;
     private int time;
     private int invulnerabilityEnd;
     private int speedEnd;
@@ -37,11 +36,7 @@ public class Game {
         Position startingPosition = new Position(this.maxX / 3, this.maxY * 2 / 3);
         this.character = new Character(startingPosition);
         this.blocks = new HashSet<>();
-        this.inventory = new ArrayList<>();
-        this.availableKeys = new ArrayList<>();
-        this.availableKeys.add("1");
-        this.availableKeys.add("2");
-        this.availableKeys.add("3");
+        this.inventory = new Inventory(this);
         this.time = 0;
         this.invulnerabilityEnd = 0;
         this.speedEnd = 0;
@@ -220,15 +215,7 @@ public class Game {
     // its use if available; returns true if collected and removes
     // pu from the list of game blocks
     public boolean collectPowerUp(PowerUp pu) {
-        this.availableKeys.sort(null);
-        if (this.availableKeys.size() != 0) {
-            pu.setKeyAssignment(this.availableKeys.get(0));
-            this.availableKeys.remove(0);
-            this.inventory.add(pu);
-            this.blocks.remove(pu);
-            return true;
-        }
-        return false;
+        return inventory.collectPowerUp(pu);
     }
 
     // REQUIRES: pu in inventory of power-ups
@@ -238,18 +225,7 @@ public class Game {
     // the used power-up from the inventory; only refreshes
     // duration if an identical power-up is already in use
     public void usePowerUp(PowerUp pu) {
-        this.inventory.remove(pu);
-        this.availableKeys.add(pu.getKeyAssignment());
-        pu.setKeyAssignment(null);
-        if (pu.getName().equals(INVULNERABLE)) {
-            this.invulnerabilityEnd = this.time + POWER_UP_TIME;
-        } else {
-            this.speedEnd = this.time + POWER_UP_TIME;
-            int currentMultiplier = this.character.getVelocityXMultiplier();
-            if (currentMultiplier == 1 ^ currentMultiplier == -1) {
-                this.character.setVelocityXMultiplier(currentMultiplier * 2);
-            }
-        }
+        inventory.usePowerUp(pu);
     }
 
     // EFFECTS: returns this as a JSONObject
@@ -283,7 +259,7 @@ public class Game {
     private JSONArray inventoryToJson() {
         JSONArray jsonArray = new JSONArray();
 
-        for (PowerUp pu : this.inventory) {
+        for (PowerUp pu : inventory.getInventory()) {
             jsonArray.put(pu.toJson());
         }
         return jsonArray;
@@ -292,13 +268,13 @@ public class Game {
     // MODIFIES: this
     // EFFECTS: adds a power-up to the inventory
     public void addPowerUpToInventory(PowerUp pu) {
-        this.inventory.add(pu);
+        inventory.addPowerUpToInventory(pu);
     }
 
     // MODIFIES: this
-    // EFFECTS: removes a key from available key assignments
+    // EFFECTS: removes a key from available key assignments for inventory
     public void removeAvailableKey(String key) {
-        this.availableKeys.remove(key);
+        inventory.removeAvailableKey(key);
     }
 
     public int getInvulnerabilityEnd() {
@@ -330,11 +306,11 @@ public class Game {
     }
 
     public List<PowerUp> getInventory() {
-        return inventory;
+        return inventory.getInventory();
     }
 
     public List<String> getAvailableKeys() {
-        return availableKeys;
+        return inventory.getAvailableKeys();
     }
 
     public int getTime() {
