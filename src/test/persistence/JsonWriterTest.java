@@ -83,7 +83,7 @@ class JsonWriterTest extends JsonTestHelpers {
             assertEquals(2, state.getAvailableKeys().size());
             assertEquals(0, state.getTime());
             assertEquals(0, state.getInvulnerabilityEnd());
-            assertEquals(30, state.getSpeedEnd());
+            assertEquals(0 + Game.POWER_UP_TIME, state.getSpeedEnd());
             assertFalse(state.isEnded());
             checkPowerUp("invulnerability", 28, 14, "2", state.getInventory().get(0));
         } catch (IOException e) {

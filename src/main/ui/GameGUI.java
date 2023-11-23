@@ -3,6 +3,7 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
+import com.googlecode.lanterna.TextColor;
 import model.*;
 import persistence.JsonReader;
 import persistence.JsonWriter;
@@ -14,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class GameGUI extends JPanel implements ActionListener, Runnable {
+    private static final int FPS = 60;
     private static final String JSON_STORE = "./data/save-state.json";
     private static final String FONT_NAME = "Consolas";
     private static final Font REGULAR_TEXT = new Font(FONT_NAME, Font.PLAIN, 14);
@@ -40,7 +42,9 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
         this.setBackground(Color.black);
         this.addKeyListener(inputHandler);
         this.setFocusable(true);
+
         this.game = new Game(WIDTH_PX, HEIGHT_PX);
+        initializeTestMap(this.game);
     }
 
     // MODIFIES: this
@@ -99,9 +103,9 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
 
     @Override
     public void run() {
-        double tickInterval = 1000000000 / 60;
+        double tickInterval = 1000000000 / FPS;
         double nextDrawTime = System.nanoTime() + tickInterval;
-        while (this.gameThread != null) {
+        while (this.gameThread != null && !this.game.isEnded()) {
             guiTick();
             repaint();
             try {
@@ -115,6 +119,7 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
                 e.printStackTrace();
             }
         }
+        System.exit(0);
     }
 
     public void guiTick() {
@@ -132,7 +137,7 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
             negateMultiplier("right", currentMultiplier);
         } else if (inputHandler.isSpacePress()) {
             if (this.game.onPlatform(game.getCharacter().getPosition())) {
-                this.game.getCharacter().setVelocityY(-3);
+                this.game.getCharacter().setVelocityY(-20);
             }
         } else if (inputHandler.isItem1Press()) {
             searchAndUse("1");
@@ -145,31 +150,6 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
         } else {
             this.game.getCharacter().setVelocityX(0);
         }
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        drawCharacter(g2d);
-        g2d.dispose();
-    }
-
-    public void drawCharacter(Graphics2D g2d) {
-        BufferedImage image = null;
-        if (game.getCharacter().getVelocityXMultiplier() > 0) {
-            image = sprites.getFwd();
-            sprites.setLastCharacter(image);
-        } else if (game.getCharacter().getVelocityXMultiplier() < 0) {
-            image = sprites.getRev();
-            sprites.setLastCharacter(image);
-        } else {
-            image = sprites.getLastCharacter();
-        }
-        g2d.drawImage(image, game.getCharacter().getPosition().getPositionX(),
-                game.getCharacter().getPosition().getPositionY(),
-                GRID_UNIT,
-                GRID_UNIT, null);
     }
 
     // MODIFIES: this
@@ -205,6 +185,64 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
         }
     }
 
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        drawBlocks(g2d);
+        drawCharacter(g2d);
+        g2d.dispose();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: displays the blocks in the game using assigned symbols/characters
+    private void drawBlocks(Graphics2D g2d) {
+        for (Block block : this.game.getBlocks()) {
+            drawBlock(block, g2d);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: displays a single block at p using assigned symbols/characters
+    private void drawBlock(Block block, Graphics2D g2d) {
+        BufferedImage image = null;
+        switch (block.getName()) {
+            case Game.BLOCK:
+                image = sprites.getBlock();
+                break;
+            case Game.HAZARD:
+                image = sprites.getHazard();
+                break;
+            case Game.SPEED:
+                image = sprites.getSpeed();
+                break;
+            case Game.INVULNERABLE:
+                image = sprites.getInvulnerability();
+                break;
+        }
+        g2d.drawImage(image, block.getPosition().getPositionX(),
+                block.getPosition().getPositionY(),
+                GRID_UNIT,
+                GRID_UNIT, null);
+    }
+
+    private void drawCharacter(Graphics2D g2d) {
+        BufferedImage image;
+        if (game.getCharacter().getVelocityXMultiplier() > 0) {
+            image = sprites.getFwd();
+            sprites.setLastCharacter(image);
+        } else if (game.getCharacter().getVelocityXMultiplier() < 0) {
+            image = sprites.getRev();
+            sprites.setLastCharacter(image);
+        } else {
+            image = sprites.getLastCharacter();
+        }
+        g2d.drawImage(image, game.getCharacter().getPosition().getPositionX(),
+                game.getCharacter().getPosition().getPositionY(),
+                GRID_UNIT,
+                GRID_UNIT, null);
+    }
+
     // modelled after JsonSerializationDemo provided by CPSC 210 at UBC
     // MODIFIES: this
     // EFFECTS: loads game state from file
@@ -226,5 +264,19 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
         } catch (FileNotFoundException e) {
             System.exit(1);
         }
+    }
+
+    // temporary method for creating a test map for developers to test the UI
+    private void initializeTestMap(Game testgame) {
+        for (int i = 0; i < game.getMaxX(); i += 1) {
+            testgame.addBlock(new Block(new Position(i, 470)));
+        }
+
+        testgame.addBlock(new Hazard(new Position(20, 469)));
+        testgame.addBlock(new PowerUp(new Position(200, 469), Game.INVULNERABLE));
+        testgame.addBlock(new PowerUp(new Position(400, 469), Game.SPEED));
+        testgame.addBlock(new Hazard(new Position(600, 469)));
+        testgame.addBlock(new PowerUp(new Position(800,469), Game.INVULNERABLE));
+        testgame.addBlock(new PowerUp(new Position(750, 469), Game.SPEED));
     }
 }

@@ -328,8 +328,8 @@ class GameTest {
 
         testGame.usePowerUp(testPowerUp1);
         testGame.usePowerUp(testPowerUp2);
-        assertEquals(30, testGame.getSpeedEnd());
-        assertEquals(30, testGame.getInvulnerabilityEnd());
+        assertEquals(0 + Game.POWER_UP_TIME, testGame.getSpeedEnd());
+        assertEquals(0 + Game.POWER_UP_TIME, testGame.getInvulnerabilityEnd());
         assertNull(testPowerUp1.getKeyAssignment());
         assertNull(testPowerUp2.getKeyAssignment());
         assertEquals(2,testGame.getAvailableKeys().size());
@@ -342,7 +342,7 @@ class GameTest {
         assertEquals(-2, testGame.getCharacter().getVelocityXMultiplier());
 
         testGame.usePowerUp(testPowerUp3);
-        assertEquals(30, testGame.getSpeedEnd());
+        assertEquals(0 + Game.POWER_UP_TIME, testGame.getSpeedEnd());
         assertEquals(-2, testGame.getCharacter().getVelocityXMultiplier());
         assertNull(testPowerUp3.getKeyAssignment());
         assertEquals(3,testGame.getAvailableKeys().size());
@@ -351,7 +351,7 @@ class GameTest {
         testGame.collectPowerUp(testPowerUp4);
         assertEquals("1",testPowerUp4.getKeyAssignment());
         testGame.usePowerUp(testPowerUp4);
-        assertEquals(30, testGame.getInvulnerabilityEnd());
+        assertEquals(0 + Game.POWER_UP_TIME, testGame.getInvulnerabilityEnd());
         assertNull(testPowerUp4.getKeyAssignment());
         assertEquals(3,testGame.getAvailableKeys().size());
         assertEquals(0,testGame.getInventory().size());

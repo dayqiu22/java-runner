@@ -11,8 +11,8 @@ import java.util.HashSet;
 // handles power-up inventory (max 3 power-ups) and usage
 public class Game {
     public static final int TICKS_PER_SECOND = 10;
-    public static final int TENTH_PER_TICK = 1;
-    public static final int POWER_UP_TIME = 30;
+    public static final int UNIT_PER_TICK = 1;
+    public static final int POWER_UP_TIME = 180;
     public static final String BLOCK = "block";
     public static final String SPEED = "speedup";
     public static final String INVULNERABLE = "invulnerability";
@@ -55,7 +55,7 @@ public class Game {
     // due to gravity and handles speed-up expiry before detecting collisions;
     // then handles any boundary behaviour
     public int tick() {
-        this.time += TENTH_PER_TICK;
+        this.time += UNIT_PER_TICK;
         this.character.setVelocityY(this.character.getVelocityY() + GRAVITY);
         if (this.time >= this.speedEnd) {
             int currentMultiplier = this.character.getVelocityXMultiplier();
