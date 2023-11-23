@@ -36,7 +36,8 @@ class JsonWriterTest extends JsonTestHelpers {
 
             JsonReader reader = new JsonReader("./data/testWriterInitialGame.json");
             state = reader.read();
-            checkCharacter(26, 14, 0, 1, 0, state.getCharacter());
+            checkCharacter(state.startingPos.getPositionX(), state.startingPos.getPositionY(),
+                    0, 1, 0, state.getCharacter());
             assertEquals(0, state.getBlocks().size());
             assertEquals(0, state.getInventory().size());
             assertEquals(3, state.getAvailableKeys().size());

@@ -20,6 +20,7 @@ public class Game {
     private static final int GRAVITY = 1;
     private final int maxX;
     private final int maxY;
+    public final Position startingPos;
     private Character character;
     private HashSet<Block> blocks;
     private Inventory inventory;
@@ -33,8 +34,8 @@ public class Game {
     public Game(int maxX, int maxY) {
         this.maxX = maxX;
         this.maxY = maxY;
-        Position startingPosition = new Position(this.maxX / 3, this.maxY * 2 / 3);
-        this.character = new Character(startingPosition);
+        this.startingPos = new Position(this.maxX / 4, this.maxY * 3 / 5);
+        this.character = new Character(new Position(this.startingPos.getPositionX(), this.startingPos.getPositionY()));
         this.blocks = new HashSet<>();
         this.inventory = new Inventory(this);
         this.time = 0;
@@ -73,7 +74,6 @@ public class Game {
 
         if (atBottomBoundary(this.character.getPosition())) {
             this.ended = true;
-            return 2;
         }
         return 0;
     }

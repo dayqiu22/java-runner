@@ -11,57 +11,7 @@
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 25
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 19
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 6
-        },
-        {
-            "positionY": 15,
-            "name": "block",
             "positionX": 15
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 21
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 16
-        },
-        {
-            "positionY": 14,
-            "name": "hazard",
-            "positionX": 20
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 23
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 17
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 10
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 7
         },
         {
             "positionY": 15,
@@ -71,32 +21,7 @@
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 11
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 9
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 14
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 13
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 5
-        },
-        {
-            "positionY": 15,
-            "name": "block",
-            "positionX": 24
+            "positionX": 16
         },
         {
             "positionY": 15,
@@ -106,12 +31,37 @@
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 22
+            "positionX": 12
+        },
+        {
+            "positionY": 14,
+            "name": "hazard",
+            "positionX": 20
         },
         {
             "positionY": 15,
             "name": "block",
-            "positionX": 12
+            "positionX": 13
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 6
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 7
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 21
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 22
         },
         {
             "positionY": 16,
@@ -121,7 +71,57 @@
         {
             "positionY": 15,
             "name": "block",
+            "positionX": 14
+        },
+        {
+            "positionY": 15,
+            "name": "block",
             "positionX": 20
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 19
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 9
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 25
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 10
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 11
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 17
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 24
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 5
+        },
+        {
+            "positionY": 15,
+            "name": "block",
+            "positionX": 23
         }
     ],
     "maxX": 78,

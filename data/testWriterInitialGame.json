@@ -1,10 +1,10 @@
 {
     "character": {
-        "positionY": 14,
+        "positionY": 13,
         "velocityXMultiplier": 1,
         "velocityX": 0,
         "velocityY": 0,
-        "positionX": 26
+        "positionX": 19
     },
     "maxY": 22,
     "blocks": [],

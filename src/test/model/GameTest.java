@@ -26,21 +26,36 @@ class GameTest {
     @BeforeEach
     void runBefore() {
         testGame = new Game(30,30);
-        testBlock1 = new Block(new Position(11, 20));
-        testBlock2 = new Block(new Position(8,20));
-        testBlock3 = new Block(new Position(10,22));
-        testBlock4 = new Block(new Position(10,21));
-        testBlock4a = new Block(new Position(11,21));
-        testBlock4b = new Block(new Position(12,21));
-        testBlock4c = new Block(new Position(13,21));
-        testBlock5 = new Block(new Position(12,18));
-        testBlock6 = new Block(new Position(10,18));
-        testPowerUp1 = new PowerUp(new Position(11, 18), "speedup");
-        testPowerUp2 = new PowerUp(new Position(9, 18), "invulnerability");
-        testPowerUp3 = new PowerUp(new Position(13, 18), "speedup");
-        testPowerUp4 = new PowerUp(new Position(10, 18), "invulnerability");
-        testHazard1 = new Hazard(new Position(10,17));
-        testHazard2 = new Hazard(new Position(12,20));
+        testBlock1 = new Block(new Position(testGame.startingPos.getPositionX() + 1,
+                testGame.startingPos.getPositionY()));
+        testBlock2 = new Block(new Position(testGame.startingPos.getPositionX() - 2,
+                testGame.startingPos.getPositionY()));
+        testBlock3 = new Block(new Position(testGame.startingPos.getPositionX(),
+                testGame.startingPos.getPositionY() + 2));
+        testBlock4 = new Block(new Position(testGame.startingPos.getPositionX(),
+                testGame.startingPos.getPositionY() + 1));
+        testBlock4a = new Block(new Position(testGame.startingPos.getPositionX() + 1,
+                testGame.startingPos.getPositionY() + 1));
+        testBlock4b = new Block(new Position(testGame.startingPos.getPositionX() + 2,
+                testGame.startingPos.getPositionY() + 1));
+        testBlock4c = new Block(new Position(testGame.startingPos.getPositionX() + 3,
+                testGame.startingPos.getPositionY() + 1));
+        testBlock5 = new Block(new Position(testGame.startingPos.getPositionX() + 2,
+                testGame.startingPos.getPositionY() - 2));
+        testBlock6 = new Block(new Position(testGame.startingPos.getPositionX(),
+                testGame.startingPos.getPositionY() - 2));
+        testPowerUp1 = new PowerUp(new Position(testGame.startingPos.getPositionX() + 1,
+                testGame.startingPos.getPositionY() - 2), "speedup");
+        testPowerUp2 = new PowerUp(new Position(testGame.startingPos.getPositionX() - 1,
+                testGame.startingPos.getPositionY() - 2), "invulnerability");
+        testPowerUp3 = new PowerUp(new Position(testGame.startingPos.getPositionX() + 3,
+                testGame.startingPos.getPositionY() - 2), "speedup");
+        testPowerUp4 = new PowerUp(new Position(testGame.startingPos.getPositionX(),
+                testGame.startingPos.getPositionY() - 2), "invulnerability");
+        testHazard1 = new Hazard(new Position(testGame.startingPos.getPositionX(),
+                testGame.startingPos.getPositionY() - 3));
+        testHazard2 = new Hazard(new Position(testGame.startingPos.getPositionX() + 2,
+                testGame.startingPos.getPositionY()));
     }
 
     @Test
@@ -48,8 +63,8 @@ class GameTest {
         assertEquals(30, testGame.getMaxX());
         assertEquals(30, testGame.getMaxY());
         Character player = testGame.getCharacter();
-        assertEquals(10, player.getPosition().getPositionX());
-        assertEquals(20, player.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionX(), player.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionY(), player.getPosition().getPositionY());
         assertEquals(0, testGame.getInventory().size());
         assertEquals(3, testGame.getAvailableKeys().size());
         assertEquals(0, testGame.getTime());
@@ -64,21 +79,19 @@ class GameTest {
         assertEquals(0, testGame.tick());
         assertEquals(1, testGame.getTime());
         assertEquals(1, character.getVelocityY());
-        assertEquals(21, character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionY() + 1, character.getPosition().getPositionY());
         assertEquals(0, testGame.tick());
         assertEquals(2, testGame.getTime());
         assertEquals(2, character.getVelocityY());
-        assertEquals(23, character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionY() + 3, character.getPosition().getPositionY());
         assertEquals(0, testGame.tick());
         assertEquals(3, testGame.getTime());
         assertEquals(3, character.getVelocityY());
-        assertEquals(26, character.getPosition().getPositionY());
-        assertEquals(0, testGame.tick());
-        assertEquals(4, testGame.getTime());
-        assertEquals(4, character.getVelocityY());
-        assertEquals(30, character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionY() + 6, character.getPosition().getPositionY());
         assertFalse(testGame.isEnded());
-        assertEquals(2, testGame.tick());
+        testGame.tick();
+        testGame.tick();
+        assertEquals(1, testGame.tick());
         assertTrue(testGame.isEnded());
     }
 
@@ -94,17 +107,17 @@ class GameTest {
         testGame.setSpeedEnd(2);
 
         testGame.tick();
-        assertEquals(12, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionX() + 2, character.getPosition().getPositionX());
         testGame.tick();
-        assertEquals(13, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionX() + 3, character.getPosition().getPositionX());
         assertEquals(1, character.getVelocityXMultiplier());
 
         character.setVelocityXMultiplier(-2);
         testGame.setSpeedEnd(4);
         testGame.tick();
-        assertEquals(11, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionX() + 1, character.getPosition().getPositionX());
         testGame.tick();
-        assertEquals(10, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionX(), character.getPosition().getPositionX());
         assertEquals(-1, character.getVelocityXMultiplier());
     }
 
@@ -119,7 +132,7 @@ class GameTest {
         character.setVelocityX(3);
 
         assertEquals(1, testGame.tick());
-        assertEquals(12, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionX() + 2, character.getPosition().getPositionX());
         assertTrue(testGame.isEnded());
     }
 
@@ -134,8 +147,8 @@ class GameTest {
 
         testGame.tick();
         assertEquals(-2, character.getVelocityY());
-        assertEquals(18, character.getPosition().getPositionY());
-        assertEquals(11, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionY() - 2, character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionX() + 1, character.getPosition().getPositionX());
         assertEquals(2, testGame.getInventory().size());
         assertTrue(testGame.getInventory().contains(testPowerUp1));
         assertTrue(testGame.getInventory().contains(testPowerUp4));
@@ -145,8 +158,8 @@ class GameTest {
         testGame.tick();
         testGame.tick();
         assertEquals(2, character.getVelocityY());
-        assertEquals(20, character.getPosition().getPositionY());
-        assertEquals(15, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionY(), character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionX() + 5, character.getPosition().getPositionX());
     }
 
     @Test
@@ -160,7 +173,7 @@ class GameTest {
         assertFalse(testGame.isEnded());
         testGame.setInvulnerabilityEnd(1);
         testGame.moveResolveCollisionsX();
-        assertEquals(10, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionX(), character.getPosition().getPositionX());
 
         testGame.getBlocks().remove(testBlock1);
         character.setVelocityX(1);
@@ -168,12 +181,12 @@ class GameTest {
         testGame.moveResolveCollisionsX();
         testGame.moveResolveCollisionsX();
         assertFalse(testGame.isEnded());
-        assertEquals(14, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionX() + 4, character.getPosition().getPositionX());
 
         character.setVelocityXMultiplier(-2);
         testGame.setTime(2);
         testGame.moveResolveCollisionsX();
-        assertEquals(12, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionX() + 2, character.getPosition().getPositionX());
         assertTrue(testGame.isEnded());
     }
 
@@ -188,18 +201,18 @@ class GameTest {
         assertFalse(testGame.isEnded());
         testGame.setInvulnerabilityEnd(1);
         testGame.moveResolveCollisionsY();
-        assertEquals(20, character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionY(), character.getPosition().getPositionY());
 
         character.setVelocityY(-2);
         testGame.moveResolveCollisionsY();
         testGame.moveResolveCollisionsY();
-        assertEquals(16, character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionY() - 4, character.getPosition().getPositionY());
         assertFalse(testGame.isEnded());
 
         character.setVelocityY(2);
         testGame.setTime(2);
         testGame.moveResolveCollisionsY();
-        assertEquals(17, character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionY() - 3, character.getPosition().getPositionY());
         assertTrue(testGame.isEnded());
     }
 
@@ -211,23 +224,25 @@ class GameTest {
         character.setVelocityY(-2);
         character.setVelocityX(2);
         testGame.moveResolveCollisions();
-        assertEquals(18, character.getPosition().getPositionY());
-        assertEquals(11, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionY() - 2, character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionX() + 1, character.getPosition().getPositionX());
 
         testGame.addBlock(testBlock6);
         character.setVelocityX(2);
-        character.setPosition(new Position(10, 20));
+        character.setPosition(new Position(testGame.startingPos.getPositionX(), testGame.startingPos.getPositionY()));
         testGame.moveResolveCollisions();
-        assertEquals(19, character.getPosition().getPositionY());
-        assertEquals(12, character.getPosition().getPositionX());
+        assertEquals(testGame.startingPos.getPositionY() - 1, character.getPosition().getPositionY());
+        assertEquals(testGame.startingPos.getPositionX() + 2, character.getPosition().getPositionX());
     }
 
     @Test
     void testCheckCollisionList() {
         testGame.addBlock(testBlock1);
         testGame.addBlock(testBlock2);
-        Position testPosition1 = new Position(11, 20);
-        Position testPosition2 = new Position(8, 20);
+        Position testPosition1 = new Position(testGame.startingPos.getPositionX() + 1,
+                testGame.startingPos.getPositionY());
+        Position testPosition2 = new Position(testGame.startingPos.getPositionX() - 2,
+                testGame.startingPos.getPositionY());
 
         assertEquals(0, testGame.checkCollisionList(testGame.getCharacter().getPosition()).size());
         assertEquals(1, testGame.checkCollisionList(testPosition1).size());
@@ -362,7 +377,8 @@ class GameTest {
         testGame.addBlock(testBlock4);
         testGame.addBlock(testPowerUp1);
 
-        Position testPosition = new Position(11, 20);
+        Position testPosition = new Position(testGame.startingPos.getPositionX() + 1,
+                testGame.startingPos.getPositionY());
         assertTrue(testGame.isCollided(testPosition, testBlock1));
         assertFalse(testGame.isCollided(testPosition, testBlock2));
         assertFalse(testGame.isCollided(testPosition, testBlock4));
@@ -376,7 +392,8 @@ class GameTest {
         testGame.addBlock(testBlock4);
         testGame.addBlock(testPowerUp1);
 
-        Position testPosition = new Position(10, 21);
+        Position testPosition = new Position(testGame.startingPos.getPositionX(),
+                testGame.startingPos.getPositionY() + 1);
         assertFalse(testGame.isCollided(testPosition, testBlock1));
         assertFalse(testGame.isCollided(testPosition, testBlock3));
         assertTrue(testGame.isCollided(testPosition, testBlock4));
