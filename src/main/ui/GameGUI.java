@@ -6,10 +6,12 @@ import java.awt.*;
 import model.*;
 import persistence.JsonWriter;
 
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+// Represents the component of the GUI that will display all gameplay components
 public class GameGUI extends JPanel implements Runnable {
     private static final int FPS = 60;
     private static final String JSON_STORE = "./data/save-state.json";
@@ -26,9 +28,11 @@ public class GameGUI extends JPanel implements Runnable {
     private final int keyY;
     private final JsonWriter jsonWriter;
     private Game game;
-    private InputHandler inputHandler = new InputHandler();
     private Thread gameThread;
 
+    // EFFECTS: constructs a panel to represent the GUI for the game,
+    // initializes writer for saving the game state, a new game, and key bindings;
+    // initializes a test map for the game and starts a separate thread for the game
     public GameGUI(MainWindow display) {
         this.jsonWriter = new JsonWriter(JSON_STORE);
         this.setLayout(null);
@@ -37,7 +41,7 @@ public class GameGUI extends JPanel implements Runnable {
         this.centerX = WIDTH_PX / 2;
         this.keyY = HEIGHT_PX - 100;
         this.setBackground(Color.black);
-        this.addKeyListener(inputHandler);
+        setKeyBindings();
         this.setFocusable(true);
 
         this.game = new Game(WIDTH_PX, HEIGHT_PX);
@@ -45,17 +49,54 @@ public class GameGUI extends JPanel implements Runnable {
         startGameThread();
     }
 
+    // MODIFIES: this
+    // EFFECTS: maps keystrokes to values in the input map,
+    // and values to actions in the action map
+    private void setKeyBindings() {
+        ActionMap actionMap = getActionMap();
+        InputMap inputMap = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "VK_LEFT");
+        inputMap.put(KeyStroke.getKeyStroke("released LEFT"), "VK_LEFT_release");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "VK_RIGHT");
+        inputMap.put(KeyStroke.getKeyStroke("released RIGHT"), "VK_RIGHT_release");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "VK_SPACE");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_1, 0), "VK_1");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_2, 0), "VK_2");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_3, 0), "VK_3");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "VK_S");
+
+        actionMap.put("VK_LEFT", new KeyAction(this, "VK_LEFT"));
+        actionMap.put("VK_RIGHT", new KeyAction(this,"VK_RIGHT"));
+        actionMap.put("VK_LEFT_release", new KeyAction(this, "VK_LEFT_release"));
+        actionMap.put("VK_RIGHT_release", new KeyAction(this,"VK_RIGHT_release"));
+        actionMap.put("VK_SPACE", new KeyAction(this, "VK_SPACE"));
+        actionMap.put("VK_1", new KeyAction(this,"VK_1"));
+        actionMap.put("VK_2", new KeyAction(this, "VK_2"));
+        actionMap.put("VK_3", new KeyAction(this,"VK_3"));
+        actionMap.put("VK_S", new KeyAction(this, "VK_S"));
+    }
+
+    // MODIFIES: this
+    // EFFECTS: creates a new Thread representing the game loop timeline
     public void startGameThread() {
         this.gameThread = new Thread(this);
         this.gameThread.start();
     }
 
+    // game loop from The Mechanism of 2D games tutorial by RyiSnow on YouTube
+    // REQUIRES: this.gameThread.isAlive()
+    // MODIFIES: this
+    // EFFECTS: runs the game in its own thread, progressing the game state
+    // 60 times per second and redrawing any changes through the graphics;
+    // if the game is ended display the end screen panel with the time
+    // taken to complete the game
     @Override
     public void run() {
-        double tickInterval = 1000000000 / FPS;
+        double tickInterval = (double) 1000000000 / FPS;
         double nextDrawTime = System.nanoTime() + tickInterval;
         while (this.gameThread != null && !this.game.isEnded()) {
-            guiTick();
+            game.tick();
             repaint();
             try {
                 double remainingTime = (nextDrawTime - System.nanoTime()) / 1000000;
@@ -67,52 +108,22 @@ public class GameGUI extends JPanel implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("Looping");
         }
-        JLabel ggTime = new JLabel("Game ended in " + (this.game.getTime() / FPS) + " seconds.");
-        ggTime.setBounds(centerX - 160, 175, 500, 200);
-        ggTime.setFont(new Font(FONT_NAME, Font.PLAIN, 24));
-        this.display.getEndScreen().add(ggTime);
+        this.display.getEndScreen().getGgTime().setText("Game ended in " + (this.game.getTime() / FPS) + " seconds.");
         this.display.getCardLayout().show(this.display.getMainPanel(), "endScreen");
-    }
-
-    public void guiTick() {
-        handleUserInputs();
-        this.game.tick();
-    }
-
-    private void handleUserInputs() {
-        int currentMultiplier = this.game.getCharacter().getVelocityXMultiplier();
-        if (inputHandler.isLeftPress()) {
-            kickStart();
-            negateMultiplier("left", currentMultiplier);
-        } else if (inputHandler.isRightPress()) {
-            kickStart();
-            negateMultiplier("right", currentMultiplier);
-        } else if (inputHandler.isSpacePress()) {
-            if (this.game.onPlatform(game.getCharacter().getPosition())) {
-                this.game.getCharacter().setVelocityY(-20);
-            }
-        } else if (inputHandler.isItem1Press()) {
-            searchAndUse("1");
-        } else if (inputHandler.isItem2Press()) {
-            searchAndUse("2");
-        } else if (inputHandler.isItem3Press()) {
-            searchAndUse("3");
-        } else if (inputHandler.isSavePress()) {
-            saveGame();
-        } else {
-            this.game.getCharacter().setVelocityX(0);
-        }
     }
 
     // MODIFIES: this
     // EFFECTS: sets the game character's base velocity to 1 grid unit (50 px)/tick
-    private void kickStart() {
+    public void kickStart() {
         this.game.getCharacter().setVelocityX(3);
     }
 
-    private void negateMultiplier(String dir, int currentMultiplier) {
+    // REQUIRES: dir is "left" or "right"
+    // MODIFIES: this
+    // EFFECTS: changes direction of the velocity if not already in the same direction
+    // where < 0 is left and > 0 is right
+    public void negateMultiplier(String dir, int currentMultiplier) {
         if (currentMultiplier > 0 && dir.equals("left")) {
             this.game.getCharacter().setVelocityXMultiplier(currentMultiplier * -1);
         } else if (currentMultiplier < 0 && dir.equals("right")) {
@@ -124,7 +135,7 @@ public class GameGUI extends JPanel implements Runnable {
     // MODIFIES: this
     // EFFECTS: if the key is not available to be assigned, a power-up can be
     // located from the inventory with the assigned key and will be used
-    private void searchAndUse(String key) {
+    public void searchAndUse(String key) {
         if (!this.game.getAvailableKeys().contains(key)) {
             PowerUp toUse = null;
             for (PowerUp pu : this.game.getInventory()) {
@@ -139,6 +150,8 @@ public class GameGUI extends JPanel implements Runnable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: draws components of the game
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -151,7 +164,7 @@ public class GameGUI extends JPanel implements Runnable {
     }
 
     // MODIFIES: this
-    // EFFECTS: displays the blocks in the game using assigned symbols/characters
+    // EFFECTS: displays the blocks in the game
     private void drawBlocks(Graphics2D g2d) {
         for (Block block : this.game.getBlocks()) {
             drawBlock(block.getPosition(), block.getName(), g2d);
@@ -159,7 +172,7 @@ public class GameGUI extends JPanel implements Runnable {
     }
 
     // MODIFIES: this
-    // EFFECTS: displays a single block at p using assigned symbols/characters
+    // EFFECTS: displays a single block at pos using assigned sprites
     private void drawBlock(Position pos, String name, Graphics2D g2d) {
         BufferedImage image = null;
         switch (name) {
@@ -186,6 +199,9 @@ public class GameGUI extends JPanel implements Runnable {
                 GRID_UNIT, null);
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays the player's character in the game with a sprite,
+    // varies if the character is facing left, right, or is invulnerable
     private void drawCharacter(Graphics2D g2d) {
         BufferedImage image;
         boolean inv = game.getTime() < game.getInvulnerabilityEnd();
@@ -213,7 +229,7 @@ public class GameGUI extends JPanel implements Runnable {
     }
 
     // MODIFIES: this
-    // EFFECTS: displays the player's inventory of power-ups
+    // EFFECTS: displays the player's inventory of power-ups using sprites
     private void drawInventory(Graphics2D g2d) {
         List<PowerUp> inventory = this.game.getInventory();
 
@@ -260,7 +276,7 @@ public class GameGUI extends JPanel implements Runnable {
 
     // modelled after JsonSerializationDemo provided by CPSC 210 at UBC
     // EFFECTS: saves the game state to file
-    private void saveGame() {
+    public void saveGame() {
         try {
             jsonWriter.open();
             jsonWriter.write(this.game);
@@ -278,13 +294,9 @@ public class GameGUI extends JPanel implements Runnable {
         return game;
     }
 
-    public void setInputHandler(InputHandler inputHandler) {
-        this.inputHandler = inputHandler;
-    }
-
     // temporary method for creating a test map for developers to test the UI
-    public void initializeTestMap(Game testgame) {
-        for (int i = 0; i < game.getMaxX(); i += 1) {
+    private void initializeTestMap(Game testgame) {
+        for (int i = 0; i <= game.getMaxX(); i += 1) {
             testgame.addBlock(new Block(new Position(i, 470)));
         }
 

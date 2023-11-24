@@ -3,6 +3,7 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
+// Represents the window of the GUI that will display application components
 public class MainWindow extends JFrame {
     private GameGUI game;
     private final EndScreenGUI endScreen;
@@ -10,6 +11,9 @@ public class MainWindow extends JFrame {
     private final JFrame mainWindow;
     private final JPanel mainPanel;
 
+    // EFFECTS: constructs a new window to hold the panel components of
+    // the game application; initializes the window to have a card-layout
+    // with menu and end screen panels; shows the menu panel first
     public MainWindow() {
         mainWindow = new JFrame();
         mainWindow.setResizable(false);
@@ -19,30 +23,28 @@ public class MainWindow extends JFrame {
         mainPanel = new JPanel();
         mainPanel.setLayout(layout);
 
-        game = new GameGUI(this);
         MenuGUI menu = new MenuGUI(this);
         endScreen = new EndScreenGUI(this);
-        mainPanel.add(game, "game");
         mainPanel.add(endScreen, "endScreen");
         mainPanel.add(menu, "menu");
 
         mainWindow.add(mainPanel);
         mainWindow.setLocationRelativeTo(null);
-        layout.show(mainPanel, "game");
+        layout.show(mainPanel, "menu");
         mainWindow.pack();
         mainWindow.setVisible(true);
     }
 
+    // MODIFIES: this
+    // EFFECTS: removes existing game panel and creates a new game panel;
+    // repacks and redraws components of the GUI
     public void startNewGame() {
-        // Create a new GameGUI instance and replace the existing one
-        mainPanel.remove(game);
+        if (game != null) {
+            mainPanel.remove(game);
+        }
         game = new GameGUI(this);
         mainPanel.add(game, "game");
 
-        // Create a new InputHandler
-        game.setInputHandler(new InputHandler());
-
-        // Pack and repaint
         mainWindow.pack();
         mainWindow.repaint();
     }

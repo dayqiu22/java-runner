@@ -4,6 +4,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+// Acts to store the png sprite representations of game components
+// to be displayed in the game panel
 public class Sprites {
     private BufferedImage block;
     private BufferedImage fwd;
@@ -15,6 +17,9 @@ public class Sprites {
     private BufferedImage speed;
     private BufferedImage lastCharacter;
 
+    // inspired by Sprites and Animation tutorial by RyiSnow on YouTube
+    // EFFECTS: instantiates an instance of this class and
+    // loads in sprites from file sources and store in fields
     public Sprites() {
         try {
             block = ImageIO.read(getClass().getResourceAsStream("/sprites/block.png"));

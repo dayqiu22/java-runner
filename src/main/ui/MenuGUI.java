@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+// Represents the component of the GUI that will display main menu components
 public class MenuGUI extends JPanel implements ActionListener {
     private static final String JSON_STORE = "./data/save-state.json";
     private static final String FONT_NAME = "Consolas";
@@ -18,16 +19,19 @@ public class MenuGUI extends JPanel implements ActionListener {
     private final JsonReader jsonReader;
     private final MainWindow display;
 
+    // EFFECTS: constructs a panel to represent the GUI of the main menu,
+    // initializes reader for loading a game state and displays menu text and buttons
     public MenuGUI(MainWindow display) {
         this.jsonReader = new JsonReader(JSON_STORE);
         this.centerX = WIDTH_PX / 2;
         this.display = display;
-        this.setFocusable(true);
+        this.setFocusable(false);
         drawMenu();
     }
 
     // MODIFIES: this
-    // EFFECTS: draws the main menu with options to start a new game or load a saved game
+    // EFFECTS: adds components to the main menu with buttons to
+    // start a new game or load a saved game
     private void drawMenu() {
         this.setLayout(null);
         this.setPreferredSize(new Dimension(WIDTH_PX, HEIGHT_PX));
@@ -51,24 +55,29 @@ public class MenuGUI extends JPanel implements ActionListener {
         this.add(loadButton);
     }
 
-
+    // MODIFIES: this
+    // EFFECTS: creates a new game panel instance and maps menu buttons to actions;
+    // if the "new" button is clicked show the new game panel,
+    // if the "load" button is clicked load a saved game into the game panel before showing
     @Override
     public void actionPerformed(ActionEvent e) {
         this.display.startNewGame();
-        GameGUI gameGUI = this.display.getGame();
         String actionCommand = e.getActionCommand();
         if (actionCommand.equals("new")) {
-            startGameAndShow(gameGUI);
+            startGameAndShow();
         } else if (actionCommand.equals("load")) {
             loadGame();
-            startGameAndShow(gameGUI);
+            startGameAndShow();
         }
     }
 
-    private void startGameAndShow(GameGUI gameGUI) {
-//        gameGUI.addKeyListener(new InputHandler());
-        gameGUI.requestFocusInWindow();
-        this.display.getCardLayout().show(this.display.getMainPanel(), "game");
+    // MODIFIES: this
+    // EFFECTS: shows the game panel in the window, gives the game panel focus
+    private void startGameAndShow() {
+        SwingUtilities.invokeLater(() -> {
+            this.display.getCardLayout().show(this.display.getMainPanel(), "game");
+            this.display.getGame().requestFocusInWindow();
+        });
     }
 
     // modelled after JsonSerializationDemo provided by CPSC 210 at UBC
