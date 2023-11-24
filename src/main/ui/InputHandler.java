@@ -19,21 +19,20 @@ public class InputHandler implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
-        switch (key) {
-            case (KeyEvent.VK_LEFT):
-                this.leftPress = true;
-            case (KeyEvent.VK_RIGHT):
-                this.rightPress = true;
-            case (KeyEvent.VK_SPACE):
-                this.spacePress = true;
-            case (KeyEvent.VK_1):
-                this.item1Press = true;
-            case (KeyEvent.VK_2):
-                this.item2Press = true;
-            case (KeyEvent.VK_3):
-                this.item3Press = true;
-            case (KeyEvent.VK_S):
-                this.savePress = true;
+        if (key == KeyEvent.VK_LEFT) {
+            this.leftPress = true;
+        } else if (key == KeyEvent.VK_RIGHT) {
+            this.rightPress = true;
+        } else if (key == KeyEvent.VK_SPACE) {
+            this.spacePress = true;
+        } else if (key == KeyEvent.VK_1) {
+            this.item1Press = true;
+        } else if (key == KeyEvent.VK_2) {
+            this.item2Press = true;
+        } else if (key == KeyEvent.VK_3) {
+            this.item3Press = true;
+        } else if (key == KeyEvent.VK_S) {
+            this.savePress = true;
         }
 
     }
@@ -41,21 +40,20 @@ public class InputHandler implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
-        switch (key) {
-            case (KeyEvent.VK_LEFT):
-                this.leftPress = false;
-            case (KeyEvent.VK_RIGHT):
-                this.rightPress = false;
-            case (KeyEvent.VK_SPACE):
-                this.spacePress = false;
-            case (KeyEvent.VK_1):
-                this.item1Press = false;
-            case (KeyEvent.VK_2):
-                this.item2Press = false;
-            case (KeyEvent.VK_3):
-                this.item3Press = false;
-            case (KeyEvent.VK_S):
-                this.savePress = false;
+        if (key == KeyEvent.VK_LEFT) {
+            this.leftPress = false;
+        } else if (key == KeyEvent.VK_RIGHT) {
+            this.rightPress = false;
+        } else if (key == KeyEvent.VK_SPACE) {
+            this.spacePress = false;
+        } else if (key == KeyEvent.VK_1) {
+            this.item1Press = false;
+        } else if (key == KeyEvent.VK_2) {
+            this.item2Press = false;
+        } else if (key == KeyEvent.VK_3) {
+            this.item3Press = false;
+        } else if (key == KeyEvent.VK_S) {
+            this.savePress = false;
         }
     }
 

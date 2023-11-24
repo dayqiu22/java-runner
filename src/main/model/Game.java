@@ -21,9 +21,9 @@ public class Game {
     private final int maxX;
     private final int maxY;
     public final Position startingPos;
+    private final HashSet<Block> blocks;
+    private final Inventory inventory;
     private Character character;
-    private HashSet<Block> blocks;
-    private Inventory inventory;
     private int time;
     private int invulnerabilityEnd;
     private int speedEnd;

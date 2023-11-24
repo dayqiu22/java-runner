@@ -3,40 +3,37 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
-import com.googlecode.lanterna.TextColor;
 import model.*;
-import persistence.JsonReader;
 import persistence.JsonWriter;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.List;
 
-public class GameGUI extends JPanel implements ActionListener, Runnable {
+public class GameGUI extends JPanel implements Runnable {
     private static final int FPS = 60;
     private static final String JSON_STORE = "./data/save-state.json";
-    private static final String FONT_NAME = "Consolas";
-    private static final Font REGULAR_TEXT = new Font(FONT_NAME, Font.PLAIN, 14);
     private static final int GRID_UNIT = 50;
     private static final int MAX_COL = 20;
     private static final int MAX_ROW = 14;
     private static final int WIDTH_PX = GRID_UNIT * MAX_COL;
     private static final int HEIGHT_PX = GRID_UNIT * MAX_ROW;
+    private static final String FONT_NAME = "Consolas";
+    private static final Font REGULAR_TEXT = new Font(FONT_NAME, Font.PLAIN, 14);
     private final Sprites sprites = new Sprites();
-    private int centerX;
-    private int keyY;
+    private final MainWindow display;
+    private final int centerX;
+    private final int keyY;
+    private final JsonWriter jsonWriter;
     private Game game;
-    private JsonWriter jsonWriter;
-    private JsonReader jsonReader;
     private InputHandler inputHandler = new InputHandler();
     private Thread gameThread;
 
-    public GameGUI() {
+    public GameGUI(MainWindow display) {
         this.jsonWriter = new JsonWriter(JSON_STORE);
-        this.jsonReader = new JsonReader(JSON_STORE);
+        this.setLayout(null);
         this.setPreferredSize(new Dimension(WIDTH_PX, HEIGHT_PX));
+        this.display = display;
         this.centerX = WIDTH_PX / 2;
         this.keyY = HEIGHT_PX - 100;
         this.setBackground(Color.black);
@@ -45,55 +42,7 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
 
         this.game = new Game(WIDTH_PX, HEIGHT_PX);
         initializeTestMap(this.game);
-    }
-
-    // MODIFIES: this
-    // EFFECTS: initializes the terminal screen, the game and game map,
-    // and starts the tick cycle of the game state
-    public void startGame() throws IOException, InterruptedException {
-        Container menuContainer = drawMenu();
-        this.add(menuContainer);
-        this.setVisible(true);
-    }
-
-    // MODIFIES: this
-    // EFFECTS: draws the main menu with options to start a new game or load a saved game
-    private Container drawMenu() {
-        Container menuContainer = new JPanel();
-        menuContainer.setLayout(null);
-        menuContainer.setSize(1000, 700);
-
-        JLabel welcome = new JLabel("J A V A   R U N N E R");
-        welcome.setBounds(centerX - 150, 100, 500, 200);
-        welcome.setFont(new Font(FONT_NAME, Font.BOLD, 30));
-        menuContainer.add(welcome);
-
-        JButton newButton = new JButton("New Game");
-        newButton.setActionCommand("new");
-        newButton.setBounds(centerX - 200, 350, 150, 40);
-        newButton.setFont(REGULAR_TEXT);
-        newButton.addActionListener(this);
-        menuContainer.add(newButton);
-
-        JButton loadButton = new JButton("Load Game");
-        loadButton.setActionCommand("load");
-        loadButton.setBounds(centerX + 75, 350, 150, 40);
-        loadButton.setFont(REGULAR_TEXT);
-        loadButton.addActionListener(this);
-        menuContainer.add(loadButton);
-
-        return menuContainer;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case("new"):
-                this.game = new Game(WIDTH_PX, HEIGHT_PX);
-            case("load"):
-                loadGame();
-            default:
-        }
+        startGameThread();
     }
 
     public void startGameThread() {
@@ -118,8 +67,13 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println("Looping");
         }
-        System.exit(0);
+        JLabel ggTime = new JLabel("Game ended in " + (this.game.getTime() / FPS) + " seconds.");
+        ggTime.setBounds(centerX - 160, 175, 500, 200);
+        ggTime.setFont(new Font(FONT_NAME, Font.PLAIN, 24));
+        this.display.getEndScreen().add(ggTime);
+        this.display.getCardLayout().show(this.display.getMainPanel(), "endScreen");
     }
 
     public void guiTick() {
@@ -191,6 +145,8 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
         Graphics2D g2d = (Graphics2D) g;
         drawBlocks(g2d);
         drawCharacter(g2d);
+        drawInventory(g2d);
+        drawHUD(g2d);
         g2d.dispose();
     }
 
@@ -198,18 +154,22 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
     // EFFECTS: displays the blocks in the game using assigned symbols/characters
     private void drawBlocks(Graphics2D g2d) {
         for (Block block : this.game.getBlocks()) {
-            drawBlock(block, g2d);
+            drawBlock(block.getPosition(), block.getName(), g2d);
         }
     }
 
     // MODIFIES: this
     // EFFECTS: displays a single block at p using assigned symbols/characters
-    private void drawBlock(Block block, Graphics2D g2d) {
+    private void drawBlock(Position pos, String name, Graphics2D g2d) {
         BufferedImage image = null;
-        switch (block.getName()) {
+        switch (name) {
             case Game.BLOCK:
                 image = sprites.getBlock();
-                break;
+                g2d.drawImage(image, pos.getPositionX(),
+                        pos.getPositionY() + 50,
+                        GRID_UNIT,
+                        GRID_UNIT, null);
+                return;
             case Game.HAZARD:
                 image = sprites.getHazard();
                 break;
@@ -220,19 +180,28 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
                 image = sprites.getInvulnerability();
                 break;
         }
-        g2d.drawImage(image, block.getPosition().getPositionX(),
-                block.getPosition().getPositionY(),
+        g2d.drawImage(image, pos.getPositionX(),
+                pos.getPositionY(),
                 GRID_UNIT,
                 GRID_UNIT, null);
     }
 
     private void drawCharacter(Graphics2D g2d) {
         BufferedImage image;
+        boolean inv = game.getTime() < game.getInvulnerabilityEnd();
         if (game.getCharacter().getVelocityXMultiplier() > 0) {
-            image = sprites.getFwd();
+            if (inv) {
+                image = sprites.getFwdInv();
+            } else {
+                image = sprites.getFwd();
+            }
             sprites.setLastCharacter(image);
         } else if (game.getCharacter().getVelocityXMultiplier() < 0) {
-            image = sprites.getRev();
+            if (inv) {
+                image = sprites.getRevInv();
+            } else {
+                image = sprites.getRev();
+            }
             sprites.setLastCharacter(image);
         } else {
             image = sprites.getLastCharacter();
@@ -243,15 +212,50 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
                 GRID_UNIT, null);
     }
 
-    // modelled after JsonSerializationDemo provided by CPSC 210 at UBC
     // MODIFIES: this
-    // EFFECTS: loads game state from file
-    private void loadGame() {
-        try {
-            this.game = jsonReader.read();
-        } catch (IOException e) {
-            System.exit(1);
+    // EFFECTS: displays the player's inventory of power-ups
+    private void drawInventory(Graphics2D g2d) {
+        List<PowerUp> inventory = this.game.getInventory();
+
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(REGULAR_TEXT);
+        g2d.drawString("ITEMS:", centerX - 200, keyY + 25);
+        g2d.drawString("1:", centerX - 125, keyY + 25);
+        g2d.drawString("2:", centerX - 25, keyY + 25);
+        g2d.drawString("3:", centerX + 75, keyY + 25);
+
+        if (inventory.size() != 0) {
+            for (PowerUp pu : inventory) {
+                switch (pu.getKeyAssignment()) {
+                    case "1":
+                        drawBlock(new Position(centerX - 100, keyY), pu.getName(), g2d);
+                        break;
+                    case "2":
+                        drawBlock(new Position(centerX, keyY), pu.getName(), g2d);
+                        break;
+                    case "3":
+                        drawBlock(new Position(centerX + 100, keyY), pu.getName(), g2d);
+                        break;
+                }
+            }
         }
+    }
+
+    // based on drawScore() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
+    // MODIFIES: this
+    // EFFECTS: displays the time since game start in seconds
+    private void drawHUD(Graphics2D g2d) {
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(REGULAR_TEXT);
+        g2d.drawString("TIME:", 25, 25);
+
+        g2d.setColor(Color.GREEN);
+        g2d.setFont(REGULAR_TEXT);
+        g2d.drawString(String.valueOf(this.game.getTime() / FPS), 100, 25);
+
+        g2d.setColor(Color.PINK);
+        g2d.setFont(REGULAR_TEXT);
+        g2d.drawString("PRESS (S) TO SAVE PROGRESS", WIDTH_PX - 250, 25);
     }
 
     // modelled after JsonSerializationDemo provided by CPSC 210 at UBC
@@ -266,10 +270,26 @@ public class GameGUI extends JPanel implements ActionListener, Runnable {
         }
     }
 
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setInputHandler(InputHandler inputHandler) {
+        this.inputHandler = inputHandler;
+    }
+
     // temporary method for creating a test map for developers to test the UI
-    private void initializeTestMap(Game testgame) {
+    public void initializeTestMap(Game testgame) {
         for (int i = 0; i < game.getMaxX(); i += 1) {
             testgame.addBlock(new Block(new Position(i, 470)));
+        }
+
+        for (int i = 600; i < 850; i += 1) {
+            testgame.addBlock(new Block(new Position(i, 335)));
         }
 
         testgame.addBlock(new Hazard(new Position(20, 469)));

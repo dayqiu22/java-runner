@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Inventory {
-    private List<PowerUp> inventory;
-    private List<String> availableKeys;
-    private Game game;
+    private final List<PowerUp> inventory;
+    private final List<String> availableKeys;
+    private final Game game;
 
     public Inventory(Game game) {
         this.inventory = new ArrayList<>();
