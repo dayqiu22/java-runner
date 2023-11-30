@@ -22,7 +22,7 @@ public class GameGUI extends JPanel implements Runnable {
     private static final int HEIGHT_PX = GRID_UNIT * MAX_ROW;
     private static final String FONT_NAME = "Consolas";
     private static final Font REGULAR_TEXT = new Font(FONT_NAME, Font.PLAIN, 14);
-    private final Sprites sprites = new Sprites();
+    private final Sprites sprites;
     private final MainWindow display;
     private final int centerX;
     private final int keyY;
@@ -37,6 +37,7 @@ public class GameGUI extends JPanel implements Runnable {
         this.jsonWriter = new JsonWriter(JSON_STORE);
         this.setLayout(null);
         this.setPreferredSize(new Dimension(WIDTH_PX, HEIGHT_PX));
+        this.sprites  = Sprites.getInstance();
         this.display = display;
         this.centerX = WIDTH_PX / 2;
         this.keyY = HEIGHT_PX - 100;

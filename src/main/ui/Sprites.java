@@ -7,32 +7,43 @@ import java.io.IOException;
 // Acts to store the png sprite representations of game components
 // to be displayed in the game panel
 public class Sprites {
-    private BufferedImage block;
-    private BufferedImage fwd;
-    private BufferedImage rev;
-    private BufferedImage fwdInv;
-    private BufferedImage revInv;
-    private BufferedImage hazard;
-    private BufferedImage invulnerability;
-    private BufferedImage speed;
-    private BufferedImage lastCharacter;
+    private static Sprites sprites;
+    private static BufferedImage block;
+    private static BufferedImage fwd;
+    private static BufferedImage rev;
+    private static BufferedImage fwdInv;
+    private static BufferedImage revInv;
+    private static BufferedImage hazard;
+    private static BufferedImage invulnerability;
+    private static BufferedImage speed;
+    private static BufferedImage lastCharacter;
 
     // inspired by Sprites and Animation tutorial by RyiSnow on YouTube
-    // EFFECTS: instantiates an instance of this class and
-    // loads in sprites from file sources and store in fields
-    public Sprites() {
+    // EFFECTS: private constructor to prevent external construction
+    private Sprites() {
+
+    }
+
+    // EFFECTS: instantiates an instance of this class if not already present and
+    // loads in sprites from file sources to store in fields;
+    // returns the sole instance of this class
+    public static Sprites getInstance() {
+        if (sprites == null) {
+            sprites = new Sprites();
+        }
         try {
-            block = ImageIO.read(getClass().getResourceAsStream("/sprites/block.png"));
-            fwd = ImageIO.read(getClass().getResourceAsStream("/sprites/character_fwd.png"));
-            rev = ImageIO.read(getClass().getResourceAsStream("/sprites/character_rev.png"));
-            fwdInv = ImageIO.read(getClass().getResourceAsStream("/sprites/character_fwd_inv.png"));
-            revInv = ImageIO.read(getClass().getResourceAsStream("/sprites/character_rev_inv.png"));
-            hazard = ImageIO.read(getClass().getResourceAsStream("/sprites/hazard.png"));
-            invulnerability = ImageIO.read(getClass().getResourceAsStream("/sprites/invulnerability.png"));
-            speed = ImageIO.read(getClass().getResourceAsStream("/sprites/speed.png"));
+            block = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/block.png"));
+            fwd = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/character_fwd.png"));
+            rev = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/character_rev.png"));
+            fwdInv = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/character_fwd_inv.png"));
+            revInv = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/character_rev_inv.png"));
+            hazard = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/hazard.png"));
+            invulnerability = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/invulnerability.png"));
+            speed = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/speed.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return sprites;
     }
 
     public BufferedImage getBlock() {

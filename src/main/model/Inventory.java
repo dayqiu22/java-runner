@@ -29,7 +29,7 @@ public class Inventory {
         if (this.availableKeys.size() != 0) {
             pu.setKeyAssignment(this.availableKeys.get(0));
             EventLog.getInstance().logEvent(new Event(
-                    "Picked up \"" + pu.getName() + "\" power-up. \n "
+                    "Picked up \"" + pu.getName() + "\" power-up \n "
                             + "Assigned \"" + this.availableKeys.get(0) + "\" key to " + pu.getName() + " power-up"));
             this.availableKeys.remove(0);
             this.inventory.add(pu);

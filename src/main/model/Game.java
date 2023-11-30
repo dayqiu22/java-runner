@@ -1,5 +1,6 @@
 package model;
 
+import persistence.Writable;
 import ui.GameGUI;
 import ui.GameTerminal;
 
@@ -12,7 +13,7 @@ import java.util.HashSet;
 
 // Class representing the game as a whole, handles movement,
 // handles power-up inventory (max 3 power-ups) and usage
-public class Game {
+public class Game implements Writable {
     public static final int UNIT_PER_TICK = 1;
     public static final int POWER_UP_TIME = 180;
     public static final String BLOCK = "block";
@@ -22,6 +23,7 @@ public class Game {
     private static final int GRAVITY = 1;
     private final int maxX;
     private final int maxY;
+    // Character's starting position as a field is for the convenience of tests
     public final Position startingPos;
     private final HashSet<Block> blocks;
     private final Inventory inventory;

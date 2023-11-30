@@ -65,3 +65,22 @@ that may occur during the gameplay.***
 
 Sample event log:
 ![sample events.png](data%2Fsample%20events.png)
+
+## Phase 4: Task 3
+
+One of the first things I would probably change is to get rid of the 
+Position class. It is likely more efficient to store the x,y coordinates
+of game components as integer fields in individual classes since instantiating
+an object for each position takes up more memory. 
+
+I would also have the Character class also extend the Block class.
+Or perhaps have both Character and Block extend an abstract class
+called Entity. This way if I ever decide to change the behaviour 
+of objects in general in the game, I wouldn't have to refactor more
+than one class (e.g. changing Position field to integer fields).
+
+Since both the Game and GameGUI classes are quite large,
+there are probably functions I could refactor out into a separate class.
+I should definitely create an abstract class such as GUIPanel for
+MenuGUI, GameGUI, and EndScreenGUI to extend since I have many
+duplicate constants (e.g. font, centerX) between them.

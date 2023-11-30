@@ -1,10 +1,11 @@
 package model;
 
 import org.json.JSONObject;
+import persistence.Writable;
 
 // Class representing the player's character, its position, velocities (grid units/tick),
 // and x-direction velocity multiplier (handles direction and power-up modifier)
-public class Character {
+public class Character implements Writable {
     private static final int STARTING_VELOCITY = 0;
     private Position position;
     private int velocityX;
