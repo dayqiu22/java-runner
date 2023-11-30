@@ -13,7 +13,7 @@ import java.util.List;
 
 // Represents the component of the GUI that will display all gameplay components
 public class GameGUI extends JPanel implements Runnable {
-    private static final int FPS = 60;
+    public static final int FPS = 60;
     private static final String JSON_STORE = "./data/save-state.json";
     private static final int GRID_UNIT = 50;
     private static final int MAX_COL = 20;
@@ -296,7 +296,7 @@ public class GameGUI extends JPanel implements Runnable {
 
     // temporary method for creating a test map for developers to test the UI
     private void initializeTestMap(Game testgame) {
-        for (int i = 0; i <= game.getMaxX(); i += 1) {
+        for (int i = 1; i <= game.getMaxX(); i += 1) {
             testgame.addBlock(new Block(new Position(i, 470)));
         }
 

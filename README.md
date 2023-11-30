@@ -60,3 +60,8 @@ that may occur during the gameplay.***
 
 - At the end screen:
   - Click "Back to Menu" to return to the main menu panel
+
+## Phase 4: Task 2
+
+Sample event log:
+![sample events.png](data%2Fsample%20events.png)

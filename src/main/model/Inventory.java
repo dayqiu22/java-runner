@@ -1,5 +1,7 @@
 package model;
 
+import ui.GameGUI;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +28,16 @@ public class Inventory {
         this.availableKeys.sort(null);
         if (this.availableKeys.size() != 0) {
             pu.setKeyAssignment(this.availableKeys.get(0));
+            EventLog.getInstance().logEvent(new Event(
+                    "Picked up \"" + pu.getName() + "\" power-up. \n "
+                            + "Assigned \"" + this.availableKeys.get(0) + "\" key to " + pu.getName() + " power-up"));
             this.availableKeys.remove(0);
             this.inventory.add(pu);
             game.getBlocks().remove(pu);
             return true;
         }
+        EventLog.getInstance().logEvent(new Event(
+                "Inventory full. Did not pick up \"" + pu.getName() + "\" power-up."));
         return false;
     }
 
@@ -43,7 +50,6 @@ public class Inventory {
     public void usePowerUp(PowerUp pu) {
         this.inventory.remove(pu);
         this.availableKeys.add(pu.getKeyAssignment());
-        pu.setKeyAssignment(null);
         if (pu.getName().equals(Game.INVULNERABLE)) {
             game.setInvulnerabilityEnd(game.getTime() + Game.POWER_UP_TIME);
         } else {
@@ -53,6 +59,9 @@ public class Inventory {
                 game.getCharacter().setVelocityXMultiplier(currentMultiplier * 2);
             }
         }
+        EventLog.getInstance().logEvent(new Event(
+                "Used " + pu.getName() + " from slot \"" + pu.getKeyAssignment() + "\""));
+        pu.setKeyAssignment(null);
     }
 
     // MODIFIES: this

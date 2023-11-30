@@ -1,5 +1,8 @@
 package model;
 
+import ui.GameGUI;
+import ui.GameTerminal;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,7 +13,6 @@ import java.util.HashSet;
 // Class representing the game as a whole, handles movement,
 // handles power-up inventory (max 3 power-ups) and usage
 public class Game {
-    public static final int TICKS_PER_SECOND = 10;
     public static final int UNIT_PER_TICK = 1;
     public static final int POWER_UP_TIME = 180;
     public static final String BLOCK = "block";
@@ -42,6 +44,7 @@ public class Game {
         this.invulnerabilityEnd = 0;
         this.speedEnd = 0;
         this.ended = false;
+        EventLog.getInstance().logEvent(new Event("\nGame started!"));
     }
 
     // MODIFIES: this
@@ -68,12 +71,16 @@ public class Game {
 
         moveResolveCollisions();
         if (this.ended) {
+            EventLog.getInstance().logEvent(new Event(
+                    "Death from spike at " + (time / GameGUI.FPS) + " seconds"));
             return 1;
         }
         resolveBoundaries();
 
         if (atBottomBoundary(this.character.getPosition())) {
             this.ended = true;
+            EventLog.getInstance().logEvent(new Event(
+                    "Fell to your demise at " + (time / GameGUI.FPS) + " seconds"));
         }
         return 0;
     }
@@ -101,11 +108,8 @@ public class Game {
     // also handles collecting power-ups using a helper method
     protected void moveResolveCollisionsY() {
         int vy = this.character.getVelocityY();
-        int unitVelocity = 1;
-        if (vy < 0) {
-            unitVelocity = -1;
-            vy = vy * -1;
-        }
+        int unitVelocity = (vy < 0) ? -1 : 1;
+        vy = (vy < 0) ? (vy * -1) : vy;
 
         for (int i = 0; i < vy; i++) {
             int originalY = this.character.getPosition().getPositionY();
@@ -135,11 +139,8 @@ public class Game {
     // also handles collecting power-ups using a helper method
     protected void moveResolveCollisionsX() {
         int vx = this.character.getVelocityX() * this.character.getVelocityXMultiplier();
-        int unitVelocity = 1;
-        if (vx < 0) {
-            unitVelocity = -1;
-            vx = vx * -1;
-        }
+        int unitVelocity = (vx < 0) ? -1 : 1;
+        vx = (vx < 0) ? (vx * -1) : vx;
 
         for (int i = 0; i < vx; i++) {
             int originalX = this.character.getPosition().getPositionX();
@@ -196,11 +197,14 @@ public class Game {
         Position charaPosition = this.character.getPosition();
         if (charaPosition.getPositionX() < 0) {
             charaPosition.setPositionX(0);
+            EventLog.getInstance().logEvent(new Event("Attempted to go beyond left edge"));
         } else if (charaPosition.getPositionX() > maxX) {
             charaPosition.setPositionX(maxX);
+            EventLog.getInstance().logEvent(new Event("Attempted to go beyond right edge"));
         }
         if (charaPosition.getPositionY() < 0) {
             charaPosition.setPositionY(0);
+            EventLog.getInstance().logEvent(new Event("Attempted to go beyond top edge"));
         }
     }
 

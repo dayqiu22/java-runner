@@ -25,6 +25,7 @@ import java.util.List;
 // Represents the user interface and experience of the game, including all graphics,
 // animations, and handles user inputs
 public class GameTerminal {
+    public static final int TICKS_PER_SECOND = 10;
     private static final String JSON_STORE = "./data/save-state.json";
     private static final char CHARACTER = '8';
     private static final char BLOCK = '#';
@@ -121,7 +122,7 @@ public class GameTerminal {
     private void cycleTicks() throws IOException, InterruptedException {
         while (!this.game.isEnded() || this.endGui.getActiveWindow() != null) {
             uiTick();
-            Thread.sleep(1000L / Game.TICKS_PER_SECOND);
+            Thread.sleep(1000L / TICKS_PER_SECOND);
         }
 
         System.exit(0);
@@ -253,7 +254,7 @@ public class GameTerminal {
 
         MessageDialogBuilder messageDialogBuilder = new MessageDialogBuilder()
                 .setTitle("Game over!")
-                .setText("Game ended in " + (this.game.getTime() / Game.TICKS_PER_SECOND) + " seconds!"
+                .setText("Game ended in " + (this.game.getTime() / TICKS_PER_SECOND) + " seconds!"
                         + "\nClick ENTER to close.")
                 .addButton(MessageDialogButton.Close);
 
@@ -271,7 +272,7 @@ public class GameTerminal {
 
         text = this.screen.newTextGraphics();
         text.setForegroundColor(TextColor.ANSI.GREEN);
-        text.putString(8, 0, String.valueOf(this.game.getTime() / Game.TICKS_PER_SECOND));
+        text.putString(8, 0, String.valueOf(this.game.getTime() / TICKS_PER_SECOND));
 
         text = this.screen.newTextGraphics();
         text.setForegroundColor(TextColor.ANSI.YELLOW);

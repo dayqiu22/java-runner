@@ -1,10 +1,15 @@
 package ui;
 
+import model.Event;
+import model.EventLog;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 // Represents the window of the GUI that will display application components
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements WindowListener {
     private GameGUI game;
     private final EndScreenGUI endScreen;
     private final CardLayout layout;
@@ -15,9 +20,10 @@ public class MainWindow extends JFrame {
     // the game application; initializes the window to have a card-layout
     // with menu and end screen panels; shows the menu panel first
     public MainWindow() {
+        super();
         mainWindow = new JFrame();
         mainWindow.setResizable(false);
-        mainWindow.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        mainWindow.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         mainWindow.setTitle("Java Runner");
         layout = new CardLayout();
         mainPanel = new JPanel();
@@ -28,6 +34,7 @@ public class MainWindow extends JFrame {
         mainPanel.add(endScreen, "endScreen");
         mainPanel.add(menu, "menu");
 
+        mainWindow.addWindowListener(this);
         mainWindow.add(mainPanel);
         mainWindow.setLocationRelativeTo(null);
         layout.show(mainPanel, "menu");
@@ -63,5 +70,38 @@ public class MainWindow extends JFrame {
 
     public JPanel getMainPanel() {
         return mainPanel;
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+        for (Event next : EventLog.getInstance()) {
+            System.out.println(next.getDescription());
+        }
+        this.dispose();
+        System.exit(0);
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
     }
 }
