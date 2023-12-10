@@ -32,7 +32,7 @@ public class KeyAction extends AbstractAction {
             gameGUI.kickStart();
             gameGUI.negateMultiplier("right", currentMultiplier);
         } else if (actionCommand.equals("VK_SPACE")) {
-            if (gameGUI.getGame().onPlatform(gameGUI.getGame().getCharacter().getPosition())) {
+            if (gameGUI.getGame().onPlatform()) {
                 gameGUI.getGame().getCharacter().setVelocityY(-20);
             }
         } else if (actionCommand.equals("VK_1")) {

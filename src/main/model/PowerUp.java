@@ -10,9 +10,9 @@ public class PowerUp extends Block {
     // REQUIRES: name is "speedup" or "invulnerability"
     // EFFECTS: constructs a PowerUp at given position;
     // does not initialize key assignment
-    public PowerUp(Position position, String name) {
-        super(position);
-        this.name = name;
+    public PowerUp(int posX, int posY, String name) {
+        super(posX, posY);
+        setName(name);
     }
 
     public String getKeyAssignment() {
@@ -27,9 +27,9 @@ public class PowerUp extends Block {
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("name", this.name);
-        json.put("positionX", this.position.getPositionX());
-        json.put("positionY", this.position.getPositionY());
+        json.put("name", getName());
+        json.put("positionX", getPositionX());
+        json.put("positionY", getPositionY());
         json.put("keyAssignment", this.keyAssignment);
         return json;
     }

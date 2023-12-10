@@ -11,13 +11,13 @@ public class HazardTest {
 
     @BeforeEach
     void runBefore() {
-        testHazard = new Hazard(new Position(10,10));
+        testHazard = new Hazard(10,10);
     }
 
     @Test
     void testConstructor() {
-        assertEquals(10, testHazard.getPosition().getPositionX());
-        assertEquals(10, testHazard.getPosition().getPositionY());
+        assertEquals(10, testHazard.getPositionX());
+        assertEquals(10, testHazard.getPositionY());
         assertEquals("hazard", testHazard.getName());
     }
 }

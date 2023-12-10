@@ -12,18 +12,18 @@ public class PowerUpTest {
 
     @BeforeEach
     void runBefore() {
-        testPowerUp = new PowerUp(new Position(10,10), "speedup");
-        testPowerUp2 = new PowerUp(new Position(1,1), "invulnerable");
+        testPowerUp = new PowerUp(10,10, "speedup");
+        testPowerUp2 = new PowerUp(1,1, "invulnerable");
     }
 
     @Test
     void testConstructor() {
-        assertEquals(10, testPowerUp.getPosition().getPositionX());
-        assertEquals(10, testPowerUp.getPosition().getPositionY());
+        assertEquals(10, testPowerUp.getPositionX());
+        assertEquals(10, testPowerUp.getPositionY());
         assertEquals("speedup", testPowerUp.getName());
 
-        assertEquals(1, testPowerUp2.getPosition().getPositionX());
-        assertEquals(1, testPowerUp2.getPosition().getPositionY());
+        assertEquals(1, testPowerUp2.getPositionX());
+        assertEquals(1, testPowerUp2.getPositionY());
         assertEquals("invulnerable", testPowerUp2.getName());
     }
 }

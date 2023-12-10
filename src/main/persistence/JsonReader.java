@@ -60,8 +60,7 @@ public class JsonReader {
     private Character parseCharacter(JSONObject jsonCharacter) {
         int x = jsonCharacter.getInt("positionX");
         int y = jsonCharacter.getInt("positionY");
-        Position position = new Position(x, y);
-        Character character = new Character(position);
+        Character character = new Character(x, y);
         character.setVelocityX(jsonCharacter.getInt("velocityX"));
         character.setVelocityXMultiplier(jsonCharacter.getInt("velocityXMultiplier"));
         character.setVelocityY(jsonCharacter.getInt("velocityY"));
@@ -75,25 +74,17 @@ public class JsonReader {
         JSONArray jsonBlocks = jsonGame.getJSONArray("blocks");
         for (Object json : jsonBlocks) {
             JSONObject jsonBlock = (JSONObject) json;
+            int x = jsonBlock.getInt("positionX");
+            int y = jsonBlock.getInt("positionY");
             if (jsonBlock.getString("name").equals("block")) {
-                Position position = parsePosition(jsonBlock);
-                state.addBlock(new Block(position));
+                state.addBlock(new Block(x, y));
             } else if (jsonBlock.getString("name").equals("hazard")) {
-                Position position = parsePosition(jsonBlock);
-                state.addBlock(new Hazard(position));
+                state.addBlock(new Hazard(x, y));
             } else {
                 String name = jsonBlock.getString("name");
-                Position position = parsePosition(jsonBlock);
-                state.addBlock(new PowerUp(position, name));
+                state.addBlock(new PowerUp(x, y, name));
             }
         }
-    }
-
-    // EFFECTS: reconstructs the position of an object using JSON information
-    private Position parsePosition(JSONObject jsonBlock) {
-        int x = jsonBlock.getInt("positionX");
-        int y = jsonBlock.getInt("positionY");
-        return new Position(x, y);
     }
 
     // EFFECTS: restores power-ups in the inventory based on JSON information
@@ -105,8 +96,7 @@ public class JsonReader {
             String name = jsonPowerUp.getString("name");
             int x = jsonPowerUp.getInt("positionX");
             int y = jsonPowerUp.getInt("positionY");
-            Position position = new Position(x, y);
-            PowerUp pu = new PowerUp(position, name);
+            PowerUp pu = new PowerUp(x, y, name);
             pu.setKeyAssignment(jsonPowerUp.getString("keyAssignment"));
             state.removeAvailableKey(jsonPowerUp.getString("keyAssignment"));
             state.addPowerUpToInventory(pu);

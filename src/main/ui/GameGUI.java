@@ -15,7 +15,7 @@ import java.util.List;
 public class GameGUI extends JPanel implements Runnable {
     public static final int FPS = 60;
     private static final String JSON_STORE = "./data/save-state.json";
-    private static final int GRID_UNIT = 50;
+    public static final int GRID_UNIT = 50;
     private static final int MAX_COL = 20;
     private static final int MAX_ROW = 14;
     private static final int WIDTH_PX = GRID_UNIT * MAX_COL;
@@ -168,19 +168,19 @@ public class GameGUI extends JPanel implements Runnable {
     // EFFECTS: displays the blocks in the game
     private void drawBlocks(Graphics2D g2d) {
         for (Block block : this.game.getBlocks()) {
-            drawBlock(block.getPosition(), block.getName(), g2d);
+            drawBlock(block.getPositionX(), block.getPositionY(), block.getName(), g2d);
         }
     }
 
     // MODIFIES: this
     // EFFECTS: displays a single block at pos using assigned sprites
-    private void drawBlock(Position pos, String name, Graphics2D g2d) {
+    private void drawBlock(int posX, int posY, String name, Graphics2D g2d) {
         BufferedImage image = null;
         switch (name) {
             case Game.BLOCK:
                 image = sprites.getBlock();
-                g2d.drawImage(image, pos.getPositionX(),
-                        pos.getPositionY() + 50,
+                g2d.drawImage(image, posX,
+                        posY,
                         GRID_UNIT,
                         GRID_UNIT, null);
                 return;
@@ -194,8 +194,8 @@ public class GameGUI extends JPanel implements Runnable {
                 image = sprites.getInvulnerability();
                 break;
         }
-        g2d.drawImage(image, pos.getPositionX(),
-                pos.getPositionY(),
+        g2d.drawImage(image, posX,
+                posY,
                 GRID_UNIT,
                 GRID_UNIT, null);
     }
@@ -223,8 +223,8 @@ public class GameGUI extends JPanel implements Runnable {
         } else {
             image = sprites.getLastCharacter();
         }
-        g2d.drawImage(image, game.getCharacter().getPosition().getPositionX(),
-                game.getCharacter().getPosition().getPositionY(),
+        g2d.drawImage(image, game.getCharacter().getPositionX(),
+                game.getCharacter().getPositionY(),
                 GRID_UNIT,
                 GRID_UNIT, null);
     }
@@ -245,13 +245,13 @@ public class GameGUI extends JPanel implements Runnable {
             for (PowerUp pu : inventory) {
                 switch (pu.getKeyAssignment()) {
                     case "1":
-                        drawBlock(new Position(centerX - 100, keyY), pu.getName(), g2d);
+                        drawBlock(centerX - 100, keyY, pu.getName(), g2d);
                         break;
                     case "2":
-                        drawBlock(new Position(centerX, keyY), pu.getName(), g2d);
+                        drawBlock(centerX, keyY, pu.getName(), g2d);
                         break;
                     case "3":
-                        drawBlock(new Position(centerX + 100, keyY), pu.getName(), g2d);
+                        drawBlock(centerX + 100, keyY, pu.getName(), g2d);
                         break;
                 }
             }
@@ -297,19 +297,19 @@ public class GameGUI extends JPanel implements Runnable {
 
     // temporary method for creating a test map for developers to test the UI
     private void initializeTestMap(Game testgame) {
-        for (int i = 1; i <= game.getMaxX(); i += 1) {
-            testgame.addBlock(new Block(new Position(i, 470)));
+        for (int i = 0; i <= game.getMaxX(); i += GRID_UNIT) {
+            testgame.addBlock(new Block(i, 520));
         }
 
-        for (int i = 600; i < 850; i += 1) {
-            testgame.addBlock(new Block(new Position(i, 335)));
+        for (int i = 600; i < 850; i += GRID_UNIT) {
+            testgame.addBlock(new Block(i, 370));
         }
 
-        testgame.addBlock(new Hazard(new Position(20, 469)));
-        testgame.addBlock(new PowerUp(new Position(200, 469), Game.INVULNERABLE));
-        testgame.addBlock(new PowerUp(new Position(400, 469), Game.SPEED));
-        testgame.addBlock(new Hazard(new Position(600, 469)));
-        testgame.addBlock(new PowerUp(new Position(800,469), Game.INVULNERABLE));
-        testgame.addBlock(new PowerUp(new Position(750, 469), Game.SPEED));
+        testgame.addBlock(new Hazard(0, 470));
+        testgame.addBlock(new PowerUp(200, 470, Game.INVULNERABLE));
+        testgame.addBlock(new PowerUp(400, 470, Game.SPEED));
+        testgame.addBlock(new Hazard(600, 470));
+        testgame.addBlock(new PowerUp(800,470, Game.INVULNERABLE));
+        testgame.addBlock(new PowerUp(750, 470, Game.SPEED));
     }
 }

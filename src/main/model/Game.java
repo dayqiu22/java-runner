@@ -23,8 +23,9 @@ public class Game implements Writable {
     private static final int GRAVITY = 1;
     private final int maxX;
     private final int maxY;
-    // Character's starting position as a field is for the convenience of tests
-    public final Position startingPos;
+    // Character's starting position as a field for the convenience of tests
+    public final int startingPosX;
+    public final int startingPosY;
     private final HashSet<Block> blocks;
     private final Inventory inventory;
     private Character character;
@@ -38,8 +39,9 @@ public class Game implements Writable {
     public Game(int maxX, int maxY) {
         this.maxX = maxX;
         this.maxY = maxY;
-        this.startingPos = new Position(this.maxX / 4, this.maxY * 3 / 5);
-        this.character = new Character(new Position(this.startingPos.getPositionX(), this.startingPos.getPositionY()));
+        this.startingPosX = this.maxX / 4;
+        this.startingPosY = this.maxY * 3 / 5;
+        this.character = new Character(startingPosX, startingPosY);
         this.blocks = new HashSet<>();
         this.inventory = new Inventory(this);
         this.time = 0;
@@ -79,7 +81,7 @@ public class Game implements Writable {
         }
         resolveBoundaries();
 
-        if (atBottomBoundary(this.character.getPosition())) {
+        if (atBottomBoundary()) {
             this.ended = true;
             EventLog.getInstance().logEvent(new Event(
                     "Fell to your demise at " + (time / GameGUI.FPS) + " seconds"));
@@ -87,18 +89,16 @@ public class Game implements Writable {
         return 0;
     }
 
-    // Since the terminal uses a grid system rather than
-    // pixels; we will move the character 1 unit at a time
-    // to avoid skipping over blocks and not detecting collision.
-
     // REQUIRES: list of blocks in the game to not be empty
     // MODIFIES: this
     // EFFECTS: moves character vertically and checks all blocks for collisions,
     // behaviour depends on block in collision with; then moves character
     // horizontally and repeat the same procedure
     protected void moveResolveCollisions() {
-        moveResolveCollisionsY();
-        moveResolveCollisionsX();
+//        moveResolveCollisionsY();
+//        moveResolveCollisionsX();
+        moveResolveCollisionsYGui();
+        moveResolveCollisionsXGui();
     }
 
     // algorithm from Resolving Platform Collisions tutorial by Long Nguyen on YouTube
@@ -114,9 +114,9 @@ public class Game implements Writable {
         vy = (vy < 0) ? (vy * -1) : vy;
 
         for (int i = 0; i < vy; i++) {
-            int originalY = this.character.getPosition().getPositionY();
-            this.character.getPosition().setPositionY(originalY + unitVelocity);
-            List<Block> collided = checkCollisionList(this.character.getPosition());
+            int originalY = this.character.getPositionY();
+            this.character.setPositionY(originalY + unitVelocity);
+            List<GameEntity> collided = checkCollisionList();
             if (collided.size() != 0) {
                 String collisionType = collided.get(0).getName();
                 if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
@@ -125,7 +125,35 @@ public class Game implements Writable {
                 } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
                     collectPowerUp((PowerUp) collided.get(0));
                 } else if (collisionType.equals(BLOCK)) {
-                    this.character.getPosition().setPositionY(originalY);
+                    this.character.setPositionY(originalY);
+                    this.character.setVelocityY(0);
+                }
+            }
+        }
+    }
+
+    protected void moveResolveCollisionsYGui() {
+        int vy = this.character.getVelocityY();
+        int unitVelocity = (vy < 0) ? -1 : 1;
+        vy = (vy < 0) ? (vy * -1) : vy;
+
+        for (int i = 0; i < vy; i++) {
+            int originalY = this.character.getPositionY();
+            this.character.setPositionY(originalY + unitVelocity);
+            List<GameEntity> collided = checkCollisionList();
+            if (collided.size() != 0) {
+                String collisionType = collided.get(0).getName();
+                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
+                    this.ended = true;
+                    break;
+                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
+                    collectPowerUp((PowerUp) collided.get(0));
+                } else if (collisionType.equals(BLOCK)) {
+                    if (unitVelocity == 1) {
+                        this.character.setBottom(collided.get(0).getTop());
+                    } else {
+                        this.character.setTop(collided.get(0).getBottom());
+                    }
                     this.character.setVelocityY(0);
                 }
             }
@@ -145,9 +173,9 @@ public class Game implements Writable {
         vx = (vx < 0) ? (vx * -1) : vx;
 
         for (int i = 0; i < vx; i++) {
-            int originalX = this.character.getPosition().getPositionX();
-            this.character.getPosition().setPositionX(originalX + unitVelocity);
-            List<Block> collided = checkCollisionList(this.character.getPosition());
+            int originalX = this.character.getPositionX();
+            this.character.setPositionX(originalX + unitVelocity);
+            List<GameEntity> collided = checkCollisionList();
             if (collided.size() != 0) {
                 String collisionType = collided.get(0).getName();
                 if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
@@ -156,28 +184,67 @@ public class Game implements Writable {
                 } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
                     collectPowerUp((PowerUp) collided.get(0));
                 } else if (collisionType.equals(BLOCK)) {
-                    this.character.getPosition().setPositionX(originalX);
+                    this.character.setPositionX(originalX);
                     this.character.setVelocityX(0);
                 }
             }
         }
     }
 
-    // EFFECTS: returns true if p collided with the given block
-    protected boolean isCollided(Position p, Block block) {
-        int blockX = block.getPosition().getPositionX();
-        int blockY = block.getPosition().getPositionY();
-        return (p.getPositionX() == blockX && p.getPositionY() == blockY);
+    protected void moveResolveCollisionsXGui() {
+        int vx = this.character.getVelocityX() * this.character.getVelocityXMultiplier();
+        int unitVelocity = (vx < 0) ? -1 : 1;
+        vx = (vx < 0) ? (vx * -1) : vx;
+
+        for (int i = 0; i < vx; i++) {
+            int originalX = this.character.getPositionX();
+            this.character.setPositionX(originalX + unitVelocity);
+            List<GameEntity> collided = checkCollisionList();
+            if (collided.size() != 0) {
+                String collisionType = collided.get(0).getName();
+                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
+                    this.ended = true;
+                    break;
+                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
+                    collectPowerUp((PowerUp) collided.get(0));
+                } else if (collisionType.equals(BLOCK)) {
+                    if (unitVelocity == 1) {
+                        this.character.setRight(collided.get(0).getLeft());
+                    } else {
+                        this.character.setLeft(collided.get(0).getRight());
+                    }
+                    this.character.setVelocityX(0);
+                }
+            }
+        }
     }
 
-    // algorithm from Resolving Platform Collisions tutorial by Long Nguyen on YouTube
+    // EFFECTS: returns true if ge1 collided with ge2
+    protected boolean isCollided(GameEntity ge1, GameEntity ge2) {
+        int ge2X = ge2.getPositionX();
+        int ge2Y = ge2.getPositionY();
+        return (ge1.getPositionX() == ge2X && ge1.getPositionY() == ge2Y);
+    }
+
+    // EFFECTS: returns true if ge1 collided with ge2
+    protected boolean checkCollided(GameEntity ge1, GameEntity ge2) {
+        boolean notCollidedX = ge1.getRight() <= ge2.getLeft() || ge1.getLeft() >= ge2.getRight();
+        boolean notCollidedY = ge1.getTop() >= ge2.getBottom() || ge1.getBottom() <= ge2.getTop();
+        if (notCollidedX || notCollidedY) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // algorithm from Sprite Collision Detection tutorial by Long Nguyen on YouTube
     // REQUIRES: list of blocks in the game to not be empty
-    // EFFECTS: returns a list of blocks in collision with p
-    protected List<Block> checkCollisionList(Position p) {
-        List<Block> collided = new ArrayList<>();
-        for (Block block : blocks) {
-            if (isCollided(p, block)) {
-                collided.add(block);
+    // EFFECTS: returns a list of blocks in collision with c
+    protected List<GameEntity> checkCollisionList() {
+        List<GameEntity> collided = new ArrayList<>();
+        for (GameEntity ge : blocks) {
+            if (checkCollided(character, ge)) {
+                collided.add(ge);
             }
         }
         return collided;
@@ -185,34 +252,35 @@ public class Game implements Writable {
 
     // REQUIRES: list of blocks in the game to not be empty
     // EFFECTS: returns true if p is currently on a platform
-    public boolean onPlatform(Position p) {
-        int currentY = p.getPositionY();
-        p.setPositionY(currentY + 1);
-        List<Block> collided = checkCollisionList(p);
-        p.setPositionY(currentY);
+    public boolean onPlatform() {
+        int currentY = character.getPositionY();
+        character.setPositionY(currentY + 1);
+        List<GameEntity> collided = checkCollisionList();
+        character.setPositionY(currentY);
         return (collided.size() != 0);
     }
 
     // MODIFIES: this
     // EFFECTS: returns true if p is at the edge of the game (but not bottom)
     protected void resolveBoundaries() {
-        Position charaPosition = this.character.getPosition();
-        if (charaPosition.getPositionX() < 0) {
-            charaPosition.setPositionX(0);
+        int charaX = this.character.getPositionX();
+        int charaY = this.character.getPositionY();
+        if (charaX < 0) {
+            this.character.setPositionX(0);
             EventLog.getInstance().logEvent(new Event("Attempted to go beyond left edge"));
-        } else if (charaPosition.getPositionX() > maxX) {
-            charaPosition.setPositionX(maxX);
+        } else if (charaX > maxX) {
+            this.character.setPositionX(maxX);
             EventLog.getInstance().logEvent(new Event("Attempted to go beyond right edge"));
         }
-        if (charaPosition.getPositionY() < 0) {
-            charaPosition.setPositionY(0);
+        if (charaY < 0) {
+            this.character.setPositionY(0);
             EventLog.getInstance().logEvent(new Event("Attempted to go beyond top edge"));
         }
     }
 
-    // EFFECTS: returns true if p is at the bottom edge of the game
-    protected boolean atBottomBoundary(Position p) {
-        return p.getPositionY() > maxY;
+    // EFFECTS: returns true if c is at the bottom edge of the game
+    protected boolean atBottomBoundary() {
+        return character.getPositionY() > maxY;
     }
 
     // REQUIRES: pu in list of blocks in the game

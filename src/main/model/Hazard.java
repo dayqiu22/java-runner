@@ -4,8 +4,8 @@ package model;
 // within a certain range from its starting position
 public class Hazard extends Block {
     // EFFECTS: constructs a Hazard at given position
-    public Hazard(Position position) {
-        super(position);
-        this.name = "hazard";
+    public Hazard(int posX, int posY) {
+        super(posX, posY);
+        setName("hazard");
     }
 }

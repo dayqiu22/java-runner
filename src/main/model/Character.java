@@ -5,17 +5,16 @@ import persistence.Writable;
 
 // Class representing the player's character, its position, velocities (grid units/tick),
 // and x-direction velocity multiplier (handles direction and power-up modifier)
-public class Character implements Writable {
+public class Character extends GameEntity implements Writable {
     private static final int STARTING_VELOCITY = 0;
-    private Position position;
     private int velocityX;
     private int velocityXMultiplier;
     private int velocityY;
 
     // EFFECTS: constructs a Character at coordinate (x, y); initializes
     // velocity to 0 (grid units/tick), velocity multiplier to 1
-    public Character(Position position) {
-        this.position = position;
+    public Character(int posX, int posY) {
+        super(posX, posY, "player");
         this.velocityX = STARTING_VELOCITY;
         this.velocityXMultiplier = 1;
         this.velocityY = STARTING_VELOCITY;
@@ -24,20 +23,12 @@ public class Character implements Writable {
     // EFFECTS: returns this as a JSONObject
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("positionX", this.position.getPositionX());
-        json.put("positionY", this.position.getPositionY());
+        json.put("positionX", getPositionX());
+        json.put("positionY", getPositionY());
         json.put("velocityX", this.velocityX);
         json.put("velocityXMultiplier", this.velocityXMultiplier);
         json.put("velocityY", this.velocityY);
         return json;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
     }
 
     public int getVelocityX() {

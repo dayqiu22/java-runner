@@ -42,26 +42,26 @@ public class GameTerminal {
 
     // temporary method for creating a test map for developers to test the UI
     private void initializeTestMap(Game testgame) {
-        testgame.addBlock(new Block(new Position(26, 15)));
+        testgame.addBlock(new Block(26, 15));
 
-        testgame.addBlock(new Block(new Position(27, 15)));
-        testgame.addBlock(new Block(new Position(28, 16)));
-        testgame.addBlock(new Block(new Position(29, 16)));
+        testgame.addBlock(new Block(27, 15));
+        testgame.addBlock(new Block(28, 16));
+        testgame.addBlock(new Block(29, 16));
         for (int i = 30; i < 70; i++) {
-            testgame.addBlock(new Block(new Position(i, 17)));
+            testgame.addBlock(new Block(i, 17));
         }
-        testgame.addBlock(new Block(new Position(69, 16)));
+        testgame.addBlock(new Block(69, 16));
         for (int i = 25; i > 4; i--) {
-            testgame.addBlock(new Block(new Position(i, 15)));
+            testgame.addBlock(new Block(i, 15));
         }
-        testgame.addBlock(new Block(new Position(5, 14)));
+        testgame.addBlock(new Block(5, 14));
 
-        testgame.addBlock(new Hazard(new Position(20, 14)));
-        testgame.addBlock(new PowerUp(new Position(28, 14), Game.INVULNERABLE));
-        testgame.addBlock(new PowerUp(new Position(33, 16), Game.SPEED));
-        testgame.addBlock(new Hazard(new Position(50, 16)));
-        testgame.addBlock(new PowerUp(new Position(59,16), Game.INVULNERABLE));
-        testgame.addBlock(new PowerUp(new Position(8, 14), Game.SPEED));
+        testgame.addBlock(new Hazard(20, 14));
+        testgame.addBlock(new PowerUp(28, 14, Game.INVULNERABLE));
+        testgame.addBlock(new PowerUp(33, 16, Game.SPEED));
+        testgame.addBlock(new Hazard(50, 16));
+        testgame.addBlock(new PowerUp(59,16, Game.INVULNERABLE));
+        testgame.addBlock(new PowerUp(8, 14, Game.SPEED));
     }
 
     // MODIFIES: this
@@ -181,7 +181,7 @@ public class GameTerminal {
     private void handleInputCharacter(char character) {
         switch (character) {
             case (' '):
-                if (this.game.onPlatform(game.getCharacter().getPosition())) {
+                if (this.game.onPlatform()) {
                     this.game.getCharacter().setVelocityY(-3);
                 }
                 break;
@@ -283,7 +283,7 @@ public class GameTerminal {
     // EFFECTS: displays the blocks in the game using assigned symbols/characters
     private void drawBlocks() {
         for (Block block : this.game.getBlocks()) {
-            drawBlock(block, block.getPosition());
+            drawBlock(block, block.getPositionX(), block.getPositionY());
         }
     }
 
@@ -291,27 +291,27 @@ public class GameTerminal {
     // EFFECTS: displays the player's character in the game
     private void drawCharacter() {
         Character character = this.game.getCharacter();
-        drawPosition(character.getPosition(), TextColor.ANSI.WHITE, CHARACTER);
+        drawPosition(character.getPositionX(), character.getPositionY(), TextColor.ANSI.WHITE, CHARACTER);
     }
 
     // MODIFIES: this
     // EFFECTS: displays the player's inventory of power-ups
     private void drawInventory() {
         List<PowerUp> inventory = game.getInventory();
-        drawPosition(new Position(centerX - 5, keyY), TextColor.ANSI.WHITE, '1');
-        drawPosition(new Position(centerX, keyY), TextColor.ANSI.WHITE, '2');
-        drawPosition(new Position(centerX + 5, keyY), TextColor.ANSI.WHITE, '3');
+        drawPosition(centerX - 5, keyY, TextColor.ANSI.WHITE, '1');
+        drawPosition(centerX, keyY, TextColor.ANSI.WHITE, '2');
+        drawPosition(centerX + 5, keyY, TextColor.ANSI.WHITE, '3');
         if (inventory.size() != 0) {
             for (PowerUp pu : inventory) {
                 switch (pu.getKeyAssignment()) {
                     case "1":
-                        drawBlock(pu, new Position(centerX - 5, game.getMaxY()));
+                        drawBlock(pu, centerX - 5, game.getMaxY());
                         break;
                     case "2":
-                        drawBlock(pu, new Position(centerX, game.getMaxY()));
+                        drawBlock(pu, centerX, game.getMaxY());
                         break;
                     case "3":
-                        drawBlock(pu, new Position(centerX + 5, game.getMaxY()));
+                        drawBlock(pu, centerX + 5, game.getMaxY());
                         break;
                 }
             }
@@ -320,19 +320,19 @@ public class GameTerminal {
 
     // MODIFIES: this
     // EFFECTS: displays a single block at p using assigned symbols/characters
-    private void drawBlock(Block block, Position p) {
+    private void drawBlock(Block block, int posX, int posY) {
         switch (block.getName()) {
             case Game.BLOCK:
-                drawPosition(p, TextColor.ANSI.YELLOW, BLOCK);
+                drawPosition(posX, posY, TextColor.ANSI.YELLOW, BLOCK);
                 break;
             case Game.HAZARD:
-                drawPosition(p, TextColor.ANSI.RED, HAZARD);
+                drawPosition(posX, posY, TextColor.ANSI.RED, HAZARD);
                 break;
             case Game.SPEED:
-                drawPosition(p, TextColor.ANSI.GREEN, SPEED);
+                drawPosition(posX, posY, TextColor.ANSI.GREEN, SPEED);
                 break;
             case Game.INVULNERABLE:
-                drawPosition(p, TextColor.ANSI.MAGENTA, INVULNERABLE);
+                drawPosition(posX, posY, TextColor.ANSI.MAGENTA, INVULNERABLE);
                 break;
         }
     }
@@ -340,10 +340,10 @@ public class GameTerminal {
     // based on drawPosition() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // MODIFIES: this
     // EFFECTS: displays c with a custom color at the specified p in the terminal
-    private void drawPosition(Position p, TextColor color, char c) {
+    private void drawPosition(int posX, int posY, TextColor color, char c) {
         TextGraphics text = this.screen.newTextGraphics();
         text.setForegroundColor(color);
-        text.putString(p.getPositionX(), p.getPositionY(), String.valueOf(c));
+        text.putString(posX, posY, String.valueOf(c));
     }
 
     // modelled after JsonSerializationDemo provided by CPSC 210 at UBC

@@ -12,18 +12,18 @@ public class BlockTest {
 
     @BeforeEach
     void runBefore() {
-        testBlock = new Block(new Position(10,10));
-        testBlock2 = new Block(new Position(11,9));
+        testBlock = new Block(10,10);
+        testBlock2 = new Block(11,9);
     }
 
     @Test
     void testConstructor() {
-        assertEquals(10, testBlock.getPosition().getPositionX());
-        assertEquals(10, testBlock.getPosition().getPositionY());
+        assertEquals(10, testBlock.getPositionX());
+        assertEquals(10, testBlock.getPositionY());
         assertEquals("block", testBlock.getName());
 
-        assertEquals(11, testBlock2.getPosition().getPositionX());
-        assertEquals(9, testBlock2.getPosition().getPositionY());
+        assertEquals(11, testBlock2.getPositionX());
+        assertEquals(9, testBlock2.getPositionY());
         assertEquals("block", testBlock2.getName());
     }
 }

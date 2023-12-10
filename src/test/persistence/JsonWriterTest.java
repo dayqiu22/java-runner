@@ -36,7 +36,7 @@ class JsonWriterTest extends JsonTestHelpers {
 
             JsonReader reader = new JsonReader("./data/testWriterInitialGame.json");
             state = reader.read();
-            checkCharacter(state.startingPos.getPositionX(), state.startingPos.getPositionY(),
+            checkCharacter(state.startingPosX, state.startingPosY,
                     0, 1, 0, state.getCharacter());
             assertEquals(0, state.getBlocks().size());
             assertEquals(0, state.getInventory().size());
@@ -56,19 +56,20 @@ class JsonWriterTest extends JsonTestHelpers {
             Game state = new Game(78, 22);
 
             for (int i = 25; i > 4; i--) {
-                state.addBlock(new Block(new Position(i, 15)));
+                state.addBlock(new Block(i, 15));
             }
-            state.addBlock(new Hazard(new Position(20, 14)));
-            PowerUp testSpeed = new PowerUp(new Position(33, 16), Game.SPEED);
-            PowerUp testInvulnerability = new PowerUp(new Position(28, 14), Game.INVULNERABLE);
+            state.addBlock(new Hazard(20, 14));
+            PowerUp testSpeed = new PowerUp(33, 16, Game.SPEED);
+            PowerUp testInvulnerability = new PowerUp(28, 14, Game.INVULNERABLE);
             state.addBlock(testSpeed);
             state.addBlock(testInvulnerability);
-            state.addBlock(new Hazard(new Position(50, 16)));
+            state.addBlock(new Hazard(50, 16));
 
             state.collectPowerUp(testSpeed);
             state.collectPowerUp(testInvulnerability);
             state.usePowerUp(state.getInventory().get(0));
-            state.getCharacter().setPosition(new Position(27, 12));
+            state.getCharacter().setPositionX(27);
+            state.getCharacter().setPositionY(12);
             state.getCharacter().setVelocityY(-2);
             JsonWriter writer = new JsonWriter("./data/testWriterGeneralGame.json");
             writer.open();
