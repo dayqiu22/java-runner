@@ -7,6 +7,7 @@ import ui.GameTerminal;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
@@ -26,6 +27,9 @@ public class Game implements Writable {
     // Character's starting position as a field for the convenience of tests
     public final int startingPosX;
     public final int startingPosY;
+    public final int scrollXRight;
+    public final int scrollXLeft;
+    public final int scrollY;
     private final HashSet<Block> blocks;
     private final Inventory inventory;
     private Character character;
@@ -41,6 +45,9 @@ public class Game implements Writable {
         this.maxY = maxY;
         this.startingPosX = this.maxX / 4;
         this.startingPosY = this.maxY * 3 / 5;
+        this.scrollXRight = this.maxX * 9 / 20;
+        this.scrollXLeft = this.maxX / 8;
+        this.scrollY = this.maxY / 5;
         this.character = new Character(startingPosX, startingPosY);
         this.blocks = new HashSet<>();
         this.inventory = new Inventory(this);
@@ -62,6 +69,8 @@ public class Game implements Writable {
     // due to gravity and handles speed-up expiry before detecting collisions;
     // then handles any boundary behaviour
     public int tick() {
+        scroll();
+
         this.time += UNIT_PER_TICK;
         this.character.setVelocityY(this.character.getVelocityY() + GRAVITY);
         if (this.time >= this.speedEnd) {
@@ -281,6 +290,32 @@ public class Game implements Writable {
     // EFFECTS: returns true if c is at the bottom edge of the game
     protected boolean atBottomBoundary() {
         return character.getPositionY() > maxY;
+    }
+
+    // EFFECTS: moves all entities in the game to simulate camera movement
+    // if the character moves past certain boundaries
+    protected void scroll() {
+        int offsetX = 0;
+        int offsetY = 0;
+        if (character.getPositionX() > scrollXRight) {
+            offsetX = scrollXRight - character.getPositionX();
+        } else if (character.getPositionX() < scrollXLeft) {
+            offsetX = scrollXLeft - character.getPositionX();
+        }
+        if (character.getPositionY() < scrollY) {
+            offsetY = scrollY - character.getPositionY();
+        }
+
+        translate(character, offsetX, offsetY);
+        for (Block block : blocks) {
+            translate(block, offsetX, offsetY);
+        }
+    }
+
+    // EFFECTS: moves an entity given the X and Y offsets
+    protected void translate(GameEntity thing, int offsetX, int offsetY) {
+        thing.setPositionX(thing.getPositionX() + offsetX);
+        thing.setPositionY(thing.getPositionY() + offsetY);
     }
 
     // REQUIRES: pu in list of blocks in the game
