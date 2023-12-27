@@ -39,6 +39,7 @@ public class MainWindow extends JFrame implements WindowListener {
         mainWindow.setLocationRelativeTo(null);
         layout.show(mainPanel, "menu");
         mainWindow.pack();
+        mainWindow.setLocationRelativeTo(null);
         mainWindow.setVisible(true);
     }
 

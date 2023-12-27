@@ -42,7 +42,7 @@ public class GameGUI extends JPanel implements Runnable {
         this.sprites  = Sprites.getInstance();
         this.display = display;
         this.centerX = WIDTH_PX / 2;
-        this.keyY = HEIGHT_PX - 100;
+        this.keyY = 10;
         this.setBackground(Color.black);
         setKeyBindings();
         this.setFocusable(true);
@@ -123,9 +123,9 @@ public class GameGUI extends JPanel implements Runnable {
     }
 
     // MODIFIES: this
-    // EFFECTS: sets the game character's base velocity to 4 pixels per tick
+    // EFFECTS: sets the game character's base velocity to 5 pixels per tick
     public void kickStart() {
-        this.game.getCharacter().setVelocityX(4);
+        this.game.getCharacter().setVelocityX(5);
     }
 
     // REQUIRES: dir is "left" or "right"

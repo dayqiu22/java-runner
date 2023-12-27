@@ -28,7 +28,8 @@ public class Game implements Writable {
     public final int startingPosY;
     public final int scrollXRight;
     public final int scrollXLeft;
-    public final int scrollY;
+    public final int scrollYUp;
+    public final int scrollYDown;
     private final HashSet<Block> blocks;
     private final Inventory inventory;
     private Character character;
@@ -47,7 +48,8 @@ public class Game implements Writable {
         this.startingPosY = this.maxY * 3 / 5;
         this.scrollXRight = this.maxX * 9 / 20;
         this.scrollXLeft = this.maxX / 8;
-        this.scrollY = this.maxY / 5;
+        this.scrollYUp = this.maxY / 5;
+        this.scrollYDown = startingPosY;
         this.character = new Character(startingPosX, startingPosY);
         this.blocks = new HashSet<>();
         this.inventory = new Inventory(this);
@@ -279,8 +281,10 @@ public class Game implements Writable {
         } else if (character.getPositionX() < scrollXLeft) {
             offsetX = scrollXLeft - character.getPositionX();
         }
-        if (character.getPositionY() < scrollY) {
-            offsetY = scrollY - character.getPositionY();
+        if (character.getPositionY() < scrollYUp) {
+            offsetY = scrollYUp - character.getPositionY();
+        } else if (character.getPositionY() > scrollYDown) {
+            offsetY = scrollYDown - character.getPositionY();
         }
 
         translate(character, offsetX, offsetY);
