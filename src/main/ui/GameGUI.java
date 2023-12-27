@@ -16,8 +16,8 @@ public class GameGUI extends JPanel implements Runnable {
     public static final int FPS = 60;
     private static final String JSON_STORE = "./data/save-state.json";
     public static final int GRID_UNIT = 50;
-    private static final int MAX_COL = 20;
-    private static final int MAX_ROW = 14;
+    public static final int MAX_COL = 20;
+    public static final int MAX_ROW = 14;
     private static final int WIDTH_PX = GRID_UNIT * MAX_COL;
     private static final int HEIGHT_PX = GRID_UNIT * MAX_ROW;
     private static final String FONT_NAME = "Consolas";
@@ -27,6 +27,7 @@ public class GameGUI extends JPanel implements Runnable {
     private final int centerX;
     private final int keyY;
     private final JsonWriter jsonWriter;
+    private final MapLoader mapLoader;
     private Game game;
     private Thread gameThread;
 
@@ -35,6 +36,7 @@ public class GameGUI extends JPanel implements Runnable {
     // initializes a test map for the game and starts a separate thread for the game
     public GameGUI(MainWindow display) {
         this.jsonWriter = new JsonWriter(JSON_STORE);
+        this.mapLoader = new MapLoader();
         this.setLayout(null);
         this.setPreferredSize(new Dimension(WIDTH_PX, HEIGHT_PX));
         this.sprites  = Sprites.getInstance();
@@ -304,23 +306,7 @@ public class GameGUI extends JPanel implements Runnable {
     }
 
     // temporary method for creating a test map for developers to test the UI
-    private void initializeTestMap(Game testgame) {
-        for (int i = 0; i <= (game.getMaxX() + 500); i += GRID_UNIT) {
-            testgame.addBlock(new Block(i, 520));
-        }
-
-        for (int i = 600; i < 850; i += GRID_UNIT) {
-            testgame.addBlock(new Block(i, 370));
-        }
-
-        testgame.addBlock(new Hazard(0, 470));
-        testgame.addBlock(new PowerUp(200, 470, Game.INVULNERABLE));
-        testgame.addBlock(new PowerUp(400, 470, Game.SPEED));
-        testgame.addBlock(new Hazard(600, 470));
-        testgame.addBlock(new PowerUp(800,470, Game.INVULNERABLE));
-        testgame.addBlock(new PowerUp(750, 470, Game.SPEED));
-        testgame.addBlock(new FinishLine(1200, 470));
-        testgame.addBlock(new FinishLine(1200, 420));
-        testgame.addBlock(new FinishLine(1200, 370));
+    private void initializeTestMap(Game testGame) {
+        this.mapLoader.loadMap(testGame);
     }
 }
