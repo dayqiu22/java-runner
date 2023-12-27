@@ -110,14 +110,20 @@ public class GameGUI extends JPanel implements Runnable {
                 e.printStackTrace();
             }
         }
-        this.display.getEndScreen().getGgTime().setText("Game ended in " + (this.game.getTime() / FPS) + " seconds.");
+        if (this.game.isSuccess()) {
+            this.display.getEndScreen().getGgTime().setText("Level completed in " +
+                    (this.game.getTime() / FPS) + " seconds.");
+        } else {
+            this.display.getEndScreen().getGgTime().setText("Failure at " +
+                    (this.game.getTime() / FPS) + " seconds.");
+        }
         this.display.getCardLayout().show(this.display.getMainPanel(), "endScreen");
     }
 
     // MODIFIES: this
-    // EFFECTS: sets the game character's base velocity to 1 grid unit (50 px)/tick
+    // EFFECTS: sets the game character's base velocity to 4 pixels per tick
     public void kickStart() {
-        this.game.getCharacter().setVelocityX(3);
+        this.game.getCharacter().setVelocityX(4);
     }
 
     // REQUIRES: dir is "left" or "right"
@@ -193,6 +199,9 @@ public class GameGUI extends JPanel implements Runnable {
             case Game.INVULNERABLE:
                 image = sprites.getInvulnerability();
                 break;
+            case Game.FINISH:
+                image = sprites.getFinish();
+                break;
         }
         g2d.drawImage(image, posX,
                 posY,
@@ -258,7 +267,6 @@ public class GameGUI extends JPanel implements Runnable {
         }
     }
 
-    // based on drawScore() method in the TerminalGame class of SnakeConsole-Lanterna by Mazen Kotb
     // MODIFIES: this
     // EFFECTS: displays the time since game start in seconds
     private void drawHUD(Graphics2D g2d) {
@@ -297,7 +305,7 @@ public class GameGUI extends JPanel implements Runnable {
 
     // temporary method for creating a test map for developers to test the UI
     private void initializeTestMap(Game testgame) {
-        for (int i = 0; i <= game.getMaxX(); i += GRID_UNIT) {
+        for (int i = 0; i <= (game.getMaxX() + 500); i += GRID_UNIT) {
             testgame.addBlock(new Block(i, 520));
         }
 
@@ -311,5 +319,8 @@ public class GameGUI extends JPanel implements Runnable {
         testgame.addBlock(new Hazard(600, 470));
         testgame.addBlock(new PowerUp(800,470, Game.INVULNERABLE));
         testgame.addBlock(new PowerUp(750, 470, Game.SPEED));
+        testgame.addBlock(new FinishLine(1200, 470));
+        testgame.addBlock(new FinishLine(1200, 420));
+        testgame.addBlock(new FinishLine(1200, 370));
     }
 }

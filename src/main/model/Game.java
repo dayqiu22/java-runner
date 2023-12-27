@@ -2,12 +2,10 @@ package model;
 
 import persistence.Writable;
 import ui.GameGUI;
-import ui.GameTerminal;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
@@ -21,6 +19,7 @@ public class Game implements Writable {
     public static final String SPEED = "speedup";
     public static final String INVULNERABLE = "invulnerability";
     public static final String HAZARD = "hazard";
+    public static final String FINISH = "finish";
     private static final int GRAVITY = 1;
     private final int maxX;
     private final int maxY;
@@ -37,6 +36,7 @@ public class Game implements Writable {
     private int invulnerabilityEnd;
     private int speedEnd;
     private boolean ended;
+    private boolean success;
 
     // EFFECTS: constructs a new game with maximum x and y coordinate boundaries; initializes the
     // player's character and power-up inventory
@@ -55,6 +55,7 @@ public class Game implements Writable {
         this.invulnerabilityEnd = 0;
         this.speedEnd = 0;
         this.ended = false;
+        this.success = false;
         EventLog.getInstance().logEvent(new Event("\nGame started!"));
     }
 
@@ -84,6 +85,11 @@ public class Game implements Writable {
 
         moveResolveCollisions();
         if (this.ended) {
+            if (this.success) {
+                EventLog.getInstance().logEvent(new Event(
+                        "Level successfully completed in " + (time / GameGUI.FPS) + " seconds"));
+                return 0;
+            }
             EventLog.getInstance().logEvent(new Event(
                     "Death from spike at " + (time / GameGUI.FPS) + " seconds"));
             return 1;
@@ -110,37 +116,9 @@ public class Game implements Writable {
         moveResolveCollisionsXGui();
     }
 
-    // algorithm from Resolving Platform Collisions tutorial by Long Nguyen on YouTube
     // REQUIRES: list of blocks in the game to not be empty
     // MODIFIES: this
-    // EFFECTS: moves character vertically then checks all blocks for collisions,
-    // stop movement of character 1 position back if collided with a normal block,
-    // set game to ended if collision occurs with a hazard while not invulnerable;
-    // also handles collecting power-ups using a helper method
-    protected void moveResolveCollisionsY() {
-        int vy = this.character.getVelocityY();
-        int unitVelocity = (vy < 0) ? -1 : 1;
-        vy = (vy < 0) ? (vy * -1) : vy;
-
-        for (int i = 0; i < vy; i++) {
-            int originalY = this.character.getPositionY();
-            this.character.setPositionY(originalY + unitVelocity);
-            List<GameEntity> collided = checkCollisionList();
-            if (collided.size() != 0) {
-                String collisionType = collided.get(0).getName();
-                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
-                    this.ended = true;
-                    break;
-                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
-                    collectPowerUp((PowerUp) collided.get(0));
-                } else if (collisionType.equals(BLOCK)) {
-                    this.character.setPositionY(originalY);
-                    this.character.setVelocityY(0);
-                }
-            }
-        }
-    }
-
+    // EFFECTS: moves character vertically then checks all blocks for collisions
     protected void moveResolveCollisionsYGui() {
         int vy = this.character.getVelocityY();
         int unitVelocity = (vy < 0) ? -1 : 1;
@@ -151,55 +129,42 @@ public class Game implements Writable {
             this.character.setPositionY(originalY + unitVelocity);
             List<GameEntity> collided = checkCollisionList();
             if (collided.size() != 0) {
-                String collisionType = collided.get(0).getName();
-                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
-                    this.ended = true;
-                    break;
-                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
-                    collectPowerUp((PowerUp) collided.get(0));
-                } else if (collisionType.equals(BLOCK)) {
-                    if (unitVelocity == 1) {
-                        this.character.setBottom(collided.get(0).getTop());
-                    } else {
-                        this.character.setTop(collided.get(0).getBottom());
-                    }
-                    this.character.setVelocityY(0);
+                resolveCollisionsY(collided.get(0), unitVelocity);
+                if (collided.size() > 1) {
+                    resolveCollisionsY(collided.get(1), unitVelocity);
                 }
             }
         }
     }
 
     // algorithm from Resolving Platform Collisions tutorial by Long Nguyen on YouTube
-    // REQUIRES: list of blocks in the game to not be empty
     // MODIFIES: this
-    // EFFECTS: moves character horizontally then checks all blocks for collisions,
-    // stop movement of character 1 position back if collided with a normal block,
-    // set game to ended if collision occurs with a hazard while not invulnerable;
+    // EFFECTS: stop movement of character 1 position back if collided with a normal block,
+    // set game to ended if collision occurs with a hazard while not invulnerable,
+    // set game to ended and successful if collided with a finish line block;
     // also handles collecting power-ups using a helper method
-    protected void moveResolveCollisionsX() {
-        int vx = this.character.getVelocityX() * this.character.getVelocityXMultiplier();
-        int unitVelocity = (vx < 0) ? -1 : 1;
-        vx = (vx < 0) ? (vx * -1) : vx;
-
-        for (int i = 0; i < vx; i++) {
-            int originalX = this.character.getPositionX();
-            this.character.setPositionX(originalX + unitVelocity);
-            List<GameEntity> collided = checkCollisionList();
-            if (collided.size() != 0) {
-                String collisionType = collided.get(0).getName();
-                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
-                    this.ended = true;
-                    break;
-                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
-                    collectPowerUp((PowerUp) collided.get(0));
-                } else if (collisionType.equals(BLOCK)) {
-                    this.character.setPositionX(originalX);
-                    this.character.setVelocityX(0);
-                }
+    protected void resolveCollisionsY(GameEntity collision, int unitVelocity) {
+        String collisionType = collision.getName();
+        if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
+            this.ended = true;
+        } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
+            collectPowerUp((PowerUp) collision);
+        } else if (collisionType.equals(BLOCK)) {
+            if (unitVelocity == 1) {
+                this.character.setBottom(collision.getTop());
+            } else {
+                this.character.setTop(collision.getBottom());
             }
+            this.character.setVelocityY(0);
+        } else if (collisionType.equals(FINISH)) {
+            this.ended = true;
+            this.success = true;
         }
     }
 
+    // REQUIRES: list of blocks in the game to not be empty
+    // MODIFIES: this
+    // EFFECTS: moves character horizontally then checks all blocks for collisions
     protected void moveResolveCollisionsXGui() {
         int vx = this.character.getVelocityX() * this.character.getVelocityXMultiplier();
         int unitVelocity = (vx < 0) ? -1 : 1;
@@ -210,21 +175,36 @@ public class Game implements Writable {
             this.character.setPositionX(originalX + unitVelocity);
             List<GameEntity> collided = checkCollisionList();
             if (collided.size() != 0) {
-                String collisionType = collided.get(0).getName();
-                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
-                    this.ended = true;
-                    break;
-                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
-                    collectPowerUp((PowerUp) collided.get(0));
-                } else if (collisionType.equals(BLOCK)) {
-                    if (unitVelocity == 1) {
-                        this.character.setRight(collided.get(0).getLeft());
-                    } else {
-                        this.character.setLeft(collided.get(0).getRight());
-                    }
-                    this.character.setVelocityX(0);
+                resolveCollisionsX(collided.get(0), unitVelocity);
+                if (collided.size() > 1) {
+                    resolveCollisionsX(collided.get(1), unitVelocity);
                 }
             }
+        }
+    }
+
+    // algorithm from Resolving Platform Collisions tutorial by Long Nguyen on YouTube
+    // MODIFIES: this
+    // EFFECTS: stop movement of character 1 position back if collided with a normal block,
+    // set game to ended if collision occurs with a hazard while not invulnerable,
+    // set game to ended and successful if collided with a finish line block;
+    // also handles collecting power-ups using a helper method
+    protected void resolveCollisionsX(GameEntity collision, int unitVelocity) {
+        String collisionType = collision.getName();
+        if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
+            this.ended = true;
+        } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
+            collectPowerUp((PowerUp) collision);
+        } else if (collisionType.equals(BLOCK)) {
+            if (unitVelocity == 1) {
+                this.character.setRight(collision.getLeft());
+            } else {
+                this.character.setLeft(collision.getRight());
+            }
+            this.character.setVelocityX(0);
+        } else if (collisionType.equals(FINISH)) {
+            this.ended = true;
+            this.success = true;
         }
     }
 
@@ -239,11 +219,7 @@ public class Game implements Writable {
     protected boolean checkCollided(GameEntity ge1, GameEntity ge2) {
         boolean notCollidedX = ge1.getRight() <= ge2.getLeft() || ge1.getLeft() >= ge2.getRight();
         boolean notCollidedY = ge1.getTop() >= ge2.getBottom() || ge1.getBottom() <= ge2.getTop();
-        if (notCollidedX || notCollidedY) {
-            return false;
-        } else {
-            return true;
-        }
+        return !notCollidedX && !notCollidedY;
     }
 
     // algorithm from Sprite Collision Detection tutorial by Long Nguyen on YouTube
@@ -292,6 +268,7 @@ public class Game implements Writable {
         return character.getPositionY() > maxY;
     }
 
+    // MODIFIES: this
     // EFFECTS: moves all entities in the game to simulate camera movement
     // if the character moves past certain boundaries
     protected void scroll() {
@@ -312,6 +289,7 @@ public class Game implements Writable {
         }
     }
 
+    // MODIFIES: this
     // EFFECTS: moves an entity given the X and Y offsets
     protected void translate(GameEntity thing, int offsetX, int offsetY) {
         thing.setPositionX(thing.getPositionX() + offsetX);
@@ -434,6 +412,10 @@ public class Game implements Writable {
         return ended;
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
+
     public void setEnded(boolean ended) {
         this.ended = ended;
     }
@@ -444,5 +426,55 @@ public class Game implements Writable {
 
     public int getMaxY() {
         return maxY;
+    }
+
+    // deprecated
+    protected void moveResolveCollisionsY() {
+        int vy = this.character.getVelocityY();
+        int unitVelocity = (vy < 0) ? -1 : 1;
+        vy = (vy < 0) ? (vy * -1) : vy;
+
+        for (int i = 0; i < vy; i++) {
+            int originalY = this.character.getPositionY();
+            this.character.setPositionY(originalY + unitVelocity);
+            List<GameEntity> collided = checkCollisionList();
+            if (collided.size() != 0) {
+                String collisionType = collided.get(0).getName();
+                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
+                    this.ended = true;
+                    break;
+                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
+                    collectPowerUp((PowerUp) collided.get(0));
+                } else if (collisionType.equals(BLOCK)) {
+                    this.character.setPositionY(originalY);
+                    this.character.setVelocityY(0);
+                }
+            }
+        }
+    }
+
+    // deprecated
+    protected void moveResolveCollisionsX() {
+        int vx = this.character.getVelocityX() * this.character.getVelocityXMultiplier();
+        int unitVelocity = (vx < 0) ? -1 : 1;
+        vx = (vx < 0) ? (vx * -1) : vx;
+
+        for (int i = 0; i < vx; i++) {
+            int originalX = this.character.getPositionX();
+            this.character.setPositionX(originalX + unitVelocity);
+            List<GameEntity> collided = checkCollisionList();
+            if (collided.size() != 0) {
+                String collisionType = collided.get(0).getName();
+                if (collisionType.equals(HAZARD) && (this.time >= this.invulnerabilityEnd)) {
+                    this.ended = true;
+                    break;
+                } else if (collisionType.equals(SPEED) ^ collisionType.equals(INVULNERABLE)) {
+                    collectPowerUp((PowerUp) collided.get(0));
+                } else if (collisionType.equals(BLOCK)) {
+                    this.character.setPositionX(originalX);
+                    this.character.setVelocityX(0);
+                }
+            }
+        }
     }
 }

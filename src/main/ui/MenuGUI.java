@@ -36,7 +36,8 @@ public class MenuGUI extends JPanel implements ActionListener {
         this.setLayout(null);
         this.setPreferredSize(new Dimension(WIDTH_PX, HEIGHT_PX));
         JLabel welcome = new JLabel("J A V A   R U N N E R");
-        welcome.setBounds(centerX - 165, 100, 500, 200);
+        welcome.setBounds(0, 100, WIDTH_PX, 200);
+        welcome.setHorizontalAlignment(JLabel.CENTER);
         welcome.setFont(new Font(FONT_NAME, Font.BOLD, 30));
         this.add(welcome);
 
@@ -49,7 +50,7 @@ public class MenuGUI extends JPanel implements ActionListener {
 
         JButton loadButton = new JButton("Load Game");
         loadButton.setActionCommand("load");
-        loadButton.setBounds(centerX + 75, 350, 150, 40);
+        loadButton.setBounds(centerX + 50, 350, 150, 40);
         loadButton.setFont(REGULAR_TEXT);
         loadButton.addActionListener(this);
         this.add(loadButton);

@@ -33,7 +33,8 @@ public class EndScreenGUI extends JPanel implements ActionListener {
         this.setLayout(null);
         this.setPreferredSize(new Dimension(WIDTH_PX, HEIGHT_PX));
         JLabel gg = new JLabel("G A M E   O V E R");
-        gg.setBounds(centerX - 150, 100, 500, 200);
+        gg.setBounds(0, 100, WIDTH_PX, 200);
+        gg.setHorizontalAlignment(JLabel.CENTER);
         gg.setFont(new Font(FONT_NAME, Font.BOLD, 30));
         this.add(gg);
 
@@ -44,8 +45,9 @@ public class EndScreenGUI extends JPanel implements ActionListener {
         reButton.addActionListener(this);
         this.add(reButton);
 
-        ggTime.setBounds(centerX - 160, 175, 500, 200);
+        ggTime.setBounds(0, 175, WIDTH_PX, 200);
         ggTime.setFont(new Font(FONT_NAME, Font.PLAIN, 24));
+        ggTime.setHorizontalAlignment(JLabel.CENTER);
         this.add(ggTime);
     }
 

@@ -29,7 +29,7 @@ like any potential player to have an enjoyable time playing the game I made.
 - As a player, I want to be able to save my game state and quit in the options' menu.
 - As a player, I want to be able to load a saved game state or start a new game in the main menu.
 
-## Instructions for Grader
+## Instructions for Gameplay
 
 - At the main menu
   - Click "New Game" to load a new game
@@ -38,20 +38,13 @@ like any potential player to have an enjoyable time playing the game I made.
 
 
 - In the game (all visual components found here):
-
-***NOTE: Since the game was originally implemented in Phase 1 with Lanterna for the terminal
-the representation of objects in the game are single points in the **top left corner** of the sprites, 
-rather than the entire 50x50 sprites displayed. Thus, the collision detection works as before
-but only when the **top left corner** of objects come into contact. Please forgive any clunkiness
-that may occur during the gameplay.***
-
   - Press left arrow to move left
   - Press right arrow to move right
-  - Walk over "green arrows (speed)" or "shield (invulnerability)" to collect the item **(Action 1)**
+  - Walk over "green arrows (speed)" or "shield (invulnerability)" to collect the item
     - At most 3 items can be held
     - Speed doubles the character velocity for 3 seconds
     - Invulnerability makes the character pass through hazards for 3 seconds (character becomes golden)
-  - Press 1, 2, or 3 to use the corresponding item at the bottom of the UI **(Action 2)**
+  - Press 1, 2, or 3 to use the corresponding item at the bottom of the UI
   - Press space to jump
     - Can move the character left or right midair
   - Press the "s" key to save the current game state 
@@ -60,27 +53,3 @@ that may occur during the gameplay.***
 
 - At the end screen:
   - Click "Back to Menu" to return to the main menu panel
-
-## Phase 4: Task 2
-
-Sample event log:
-![sample events.png](data%2Fsample%20events.png)
-
-## Phase 4: Task 3
-
-One of the first things I would probably change is to get rid of the 
-Position class. It is likely more efficient to store the x,y coordinates
-of game components as integer fields in individual classes since instantiating
-an object for each position takes up more memory. 
-
-I would also have the Character class also extend the Block class.
-Or perhaps have both Character and Block extend an abstract class
-called Entity. This way if I ever decide to change the behaviour 
-of objects in general in the game, I wouldn't have to refactor more
-than one class (e.g. changing Position field to integer fields).
-
-Since both the Game and GameGUI classes are quite large,
-there are probably functions I could refactor out into a separate class.
-I should definitely create an abstract class such as GUIPanel for
-MenuGUI, GameGUI, and EndScreenGUI to extend since I have many
-duplicate constants (e.g. font, centerX) between them.

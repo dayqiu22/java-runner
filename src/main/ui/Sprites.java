@@ -16,9 +16,9 @@ public class Sprites {
     private static BufferedImage hazard;
     private static BufferedImage invulnerability;
     private static BufferedImage speed;
-    private static BufferedImage lastCharacter;
+    private static BufferedImage finish;
+    private BufferedImage lastCharacter;
 
-    // inspired by Sprites and Animation tutorial by RyiSnow on YouTube
     // EFFECTS: private constructor to prevent external construction
     private Sprites() {
 
@@ -40,6 +40,7 @@ public class Sprites {
             hazard = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/hazard.png"));
             invulnerability = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/invulnerability.png"));
             speed = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/speed.png"));
+            finish = ImageIO.read(Sprites.class.getResourceAsStream("/sprites/finish.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,6 +69,10 @@ public class Sprites {
 
     public BufferedImage getSpeed() {
         return speed;
+    }
+
+    public BufferedImage getFinish() {
+        return finish;
     }
 
     public BufferedImage getLastCharacter() {
