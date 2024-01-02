@@ -88,7 +88,7 @@ public class MenuGUI extends JPanel implements ActionListener {
         try {
             this.display.getGame().setGame(jsonReader.read());
         } catch (IOException e) {
-            System.exit(1);
+            startGameAndShow();
         }
     }
 }

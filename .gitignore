@@ -1,2 +1,8 @@
 *.class
 workspace.xml
+GameTerminal
+Main
+checkstyle.xml
+Project-Starter.iml
+lanterna-3.0.3.jar
+save-state.json
