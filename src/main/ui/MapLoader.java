@@ -25,7 +25,7 @@ public class MapLoader {
             }
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-            for (int row = 0; row < GameGUI.MAX_ROW; row++) {
+            for (int row = 0; row < GameGUI.MAX_ROW * 2; row++) {
                 String line = br.readLine();
                 String[] labels = line.split(",");
                 for (int col = 0; col < labels.length; col++) {

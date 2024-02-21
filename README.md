@@ -21,6 +21,15 @@ After cloning the repository, run MainGUI to start the game.
 - At the main menu
   - Click **"New Game"** to load a new game
   - Click **"Load Game"** to load the last saved game state (starts New Game if no previous save state)
+  - Click **"Upload Map .csv"** to upload a custom game map (up to 28 rows, infinite columns), 
+  where values correspond to following blocks:
+    - 0 = empty space
+    - 1 = normal block
+    - 2 = hazard
+    - 3 = speed up
+    - 4 = invulnerability
+    - 5 = finish line
+  - Click **"Reset Default Map"** to use the test map provided in the project files
 
 - In the game:
   - Press **left arrow** to move left
@@ -40,5 +49,4 @@ After cloning the repository, run MainGUI to start the game.
   - Click **"Back to Menu"** to return to the main menu panel
 
 ## What's Next
-I plan to implement **customizable game levels** where players can upload a .csv file to create,
-share, and play their own creative levels.
+TODO: music and pause menu.

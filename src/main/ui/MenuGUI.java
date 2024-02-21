@@ -41,33 +41,33 @@ public class MenuGUI extends JPanel implements ActionListener {
         JLabel welcome = new JLabel("J A V A   R U N N E R");
         welcome.setBounds(0, 100, WIDTH_PX, 200);
         welcome.setHorizontalAlignment(JLabel.CENTER);
-        welcome.setFont(new Font(FONT_NAME, Font.BOLD, 30));
+        welcome.setFont(new Font(FONT_NAME, Font.BOLD, 40));
         this.add(welcome);
 
         JButton newButton = new JButton("New Game");
         newButton.setActionCommand("new");
-        newButton.setBounds(centerX - 200, 350, 150, 40);
+        newButton.setBounds(centerX - 200, 350, 175, 40);
         newButton.setFont(REGULAR_TEXT);
         newButton.addActionListener(this);
         this.add(newButton);
 
         JButton loadButton = new JButton("Load Game");
         loadButton.setActionCommand("load");
-        loadButton.setBounds(centerX + 50, 350, 150, 40);
+        loadButton.setBounds(centerX + 25, 350, 175, 40);
         loadButton.setFont(REGULAR_TEXT);
         loadButton.addActionListener(this);
         this.add(loadButton);
 
-        JButton mapButton = new JButton("Upload Map (.csv)");
+        JButton mapButton = new JButton("Upload Map .csv");
         mapButton.setActionCommand("map");
-        mapButton.setBounds(centerX - 200, 400, 200, 40);
+        mapButton.setBounds(centerX - 200, 400, 175, 40);
         mapButton.setFont(REGULAR_TEXT);
         mapButton.addActionListener(this);
         this.add(mapButton);
 
-        JButton reset = new JButton("Reset");
+        JButton reset = new JButton("Reset Default Map");
         reset.setActionCommand("reset");
-        reset.setBounds(centerX + 100, 400, 100, 40);
+        reset.setBounds(centerX + 25, 400, 175, 40);
         reset.setFont(REGULAR_TEXT);
         reset.addActionListener(this);
         this.add(reset);
