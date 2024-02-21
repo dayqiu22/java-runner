@@ -58,12 +58,19 @@ public class MenuGUI extends JPanel implements ActionListener {
         loadButton.addActionListener(this);
         this.add(loadButton);
 
-        JButton mapButton = new JButton("Upload Game Map (.csv)");
+        JButton mapButton = new JButton("Upload Map (.csv)");
         mapButton.setActionCommand("map");
-        mapButton.setBounds(centerX - 200, 400, 400, 40);
+        mapButton.setBounds(centerX - 200, 400, 200, 40);
         mapButton.setFont(REGULAR_TEXT);
         mapButton.addActionListener(this);
         this.add(mapButton);
+
+        JButton reset = new JButton("Reset");
+        reset.setActionCommand("reset");
+        reset.setBounds(centerX + 100, 400, 100, 40);
+        reset.setFont(REGULAR_TEXT);
+        reset.addActionListener(this);
+        this.add(reset);
     }
 
     // MODIFIES: this
@@ -86,6 +93,8 @@ public class MenuGUI extends JPanel implements ActionListener {
             if (result == JFileChooser.APPROVE_OPTION) {
                 this.display.setMap(fileChooser.getSelectedFile().getAbsolutePath());
             }
+        } else if (actionCommand.equals("reset")) {
+            this.display.setMap("/maps/testmap.csv");
         } else if (actionCommand.equals("new")) {
             this.display.startNewGame();
             startGameAndShow();
