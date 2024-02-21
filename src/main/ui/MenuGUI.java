@@ -7,6 +7,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 
 // Represents the component of the GUI that will display main menu components
 public class MenuGUI extends JPanel implements ActionListener {
@@ -54,6 +57,13 @@ public class MenuGUI extends JPanel implements ActionListener {
         loadButton.setFont(REGULAR_TEXT);
         loadButton.addActionListener(this);
         this.add(loadButton);
+
+        JButton mapButton = new JButton("Upload Game Map (.csv)");
+        mapButton.setActionCommand("map");
+        mapButton.setBounds(centerX - 200, 400, 400, 40);
+        mapButton.setFont(REGULAR_TEXT);
+        mapButton.addActionListener(this);
+        this.add(mapButton);
     }
 
     // MODIFIES: this
@@ -62,11 +72,25 @@ public class MenuGUI extends JPanel implements ActionListener {
     // if the "load" button is clicked load a saved game into the game panel before showing
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.display.startNewGame();
         String actionCommand = e.getActionCommand();
-        if (actionCommand.equals("new")) {
+        if (actionCommand.equals("map")) {
+            JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            fileChooser.setAcceptAllFileFilterUsed(false);
+
+            fileChooser.setDialogTitle("Select a .txt file");
+
+            FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .csv files", "csv");
+            fileChooser.addChoosableFileFilter(restrict);
+
+            int result = fileChooser.showSaveDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                this.display.setMap(fileChooser.getSelectedFile().getAbsolutePath());
+            }
+        } else if (actionCommand.equals("new")) {
+            this.display.startNewGame();
             startGameAndShow();
         } else if (actionCommand.equals("load")) {
+            this.display.startNewGame();
             loadGame();
             startGameAndShow();
         }

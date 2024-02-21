@@ -15,6 +15,7 @@ public class MainWindow extends JFrame implements WindowListener {
     private final CardLayout layout;
     private final JFrame mainWindow;
     private final JPanel mainPanel;
+    private String map = "/maps/testmap.csv";
 
     // EFFECTS: constructs a new window to hold the panel components of
     // the game application; initializes the window to have a card-layout
@@ -50,7 +51,7 @@ public class MainWindow extends JFrame implements WindowListener {
         if (game != null) {
             mainPanel.remove(game);
         }
-        game = new GameGUI(this);
+        game = new GameGUI(this, map);
         mainPanel.add(game, "game");
 
         mainWindow.pack();
@@ -71,6 +72,10 @@ public class MainWindow extends JFrame implements WindowListener {
 
     public JPanel getMainPanel() {
         return mainPanel;
+    }
+
+    public void setMap(String map) {
+        this.map = map;
     }
 
     @Override

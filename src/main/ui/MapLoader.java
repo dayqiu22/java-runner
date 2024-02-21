@@ -3,16 +3,26 @@ package ui;
 import model.*;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class MapLoader {
+    private String map;
 
-    public MapLoader() {}
+    public MapLoader(String map) {
+        this.map = map;
+    }
 
     public void loadMap(Game game) {
         try {
-            InputStream is = getClass().getResourceAsStream("/maps/testmap.csv");
+            System.out.println(map);
+            InputStream is;
+            if (map.equals("/maps/testmap.csv")) {
+                is = getClass().getResourceAsStream(map);
+            } else {
+                is = new FileInputStream(map);
+            }
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
             for (int row = 0; row < GameGUI.MAX_ROW; row++) {

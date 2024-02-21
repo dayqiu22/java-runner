@@ -34,9 +34,9 @@ public class GameGUI extends JPanel implements Runnable {
     // EFFECTS: constructs a panel to represent the GUI for the game,
     // initializes writer for saving the game state, a new game, and key bindings;
     // initializes a test map for the game and starts a separate thread for the game
-    public GameGUI(MainWindow display) {
+    public GameGUI(MainWindow display, String map) {
         this.jsonWriter = new JsonWriter(JSON_STORE);
-        this.mapLoader = new MapLoader();
+        this.mapLoader = new MapLoader(map);
         this.setLayout(null);
         this.setPreferredSize(new Dimension(WIDTH_PX, HEIGHT_PX));
         this.sprites  = Sprites.getInstance();
